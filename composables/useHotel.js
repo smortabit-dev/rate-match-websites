@@ -170,6 +170,11 @@ export const useHotel = () => {
                 while (images.length < 8) images.push(...images.slice(0, 8 - images.length))
                 images = images.slice(0, 8)
 
+                const rawFumeur = chamber.isFumeur ?? chamber.fumeur ?? chamberItem.isFumeur ?? chamberItem.fumeur ?? false
+                const isFumeur = typeof rawFumeur === 'string'
+                    ? rawFumeur === '1' || rawFumeur.toLowerCase() === 'true'
+                    : Boolean(rawFumeur)
+
                 return {
                     id,
                     slug: generateSlug(chamberName),
@@ -179,6 +184,7 @@ export const useHotel = () => {
                     guests: chamber.chamberMaxPers || 2,
                     bedType: t.bedType || chamber.chamberBedType || 'Double Bed',
                     view: t.view || chamber.chamberView || 'City View',
+                    isFumeur,
                     price: chamber.lessprix || 200,
                     description,
                     longDescription,

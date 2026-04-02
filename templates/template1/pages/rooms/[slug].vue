@@ -16,6 +16,14 @@
       <!-- Content overlay -->
       <div class="relative h-full flex items-end pb-10 sm:pb-16 lg:pb-20 z-10">
         <div class="container mx-auto px-4 sm:px-6">
+          <!-- Back to rooms button -->
+          <div class="absolute top-5 sm:top-20 z-20">
+            <NuxtLink :to="{ path: localePath('/'), hash: '#rooms' }"
+              class="inline-flex items-center gap-2 text-white text-xs uppercase tracking-[0.15em] font-semibold bg-black/30 hover:bg-amber-700 backdrop-blur-sm px-4 py-2.5 transition-all duration-300">
+              <Icon name="mdi:arrow-left" class="text-base" />
+              {{ t.backtotherooms }}
+            </NuxtLink>
+          </div>
           <div v-if="room.category" class="flex items-center gap-3 mb-3">
             <div class="w-10 h-px bg-amber-400"></div>
             <span class="text-xs uppercase tracking-[0.2em] font-semibold text-amber-300">{{ room.category }}</span>
@@ -98,27 +106,17 @@
               <p class="section-subtitle">{{ t.informations }}</p>
               <h2 class="section-title mb-6">{{ t.policies }}</h2>
               <div class="w-12 h-px bg-amber-700 mb-8"></div>
-              <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 sm:gap-2">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2">
                 <div>
                   <Icon name="mdi:clock-outline" class="text-2xl text-amber-700 mb-2" />
                   <h3 class="text-xs uppercase tracking-[0.15em] font-semibold text-gray-800 mb-2">{{ t.checkin }} / {{ t.checkout }}</h3>
-                  <p class="text-sm text-gray-600">{{ t.checkin }}: 15:00</p>
-                  <p class="text-sm text-gray-600">{{ t.checkout }}: 12:00</p>
-                </div>
-                <div>
-                  <Icon name="mdi:cancel" class="text-2xl text-amber-700 mb-2" />
-                  <h3 class="text-xs uppercase tracking-[0.15em] font-semibold text-gray-800 mb-2">{{ t.cancellation }}</h3>
-                  <p class="text-sm text-gray-600">{{ t.annulationgratuite }}</p>
+                  <p class="text-sm text-gray-600">{{ t.checkin }}: {{ hotelCheckIn }}</p>
+                  <p class="text-sm text-gray-600">{{ t.checkout }}: {{ hotelCheckOut }}</p>
                 </div>
                 <div>
                   <Icon name="mdi:smoking-off" class="text-2xl text-amber-700 mb-2" />
                   <h3 class="text-xs uppercase tracking-[0.15em] font-semibold text-gray-800 mb-2">{{ t.smoking }}</h3>
-                  <p class="text-sm text-gray-600">{{ t.nonfumeur }}</p>
-                </div>
-                <div>
-                  <Icon name="mdi:paw" class="text-2xl text-amber-700 mb-2" />
-                  <h3 class="text-xs uppercase tracking-[0.15em] font-semibold text-gray-800 mb-2">{{ t.pets }}</h3>
-                  <p class="text-sm text-gray-600">{{ t.petsallowed }}</p>
+                  <p class="text-sm text-gray-600">{{ smokingLabel }}</p>
                 </div>
               </div>
             </div>
@@ -341,7 +339,7 @@
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           <NuxtLink v-for="sr in similarRooms" :key="sr.id"
-              :to="localePath(`/rooms/${sr.slug}`)"
+              :to="localePath(`/rooms/${sr.id}`)"
               class="group">
             <div class="relative aspect-[3/4] overflow-hidden mb-4">
               <img :src="sr.image" :alt="sr.name"
@@ -394,10 +392,16 @@ const loading = ref(true)
 const room = ref(null)
 const similarRooms = ref([])
 const hotelInfo = ref({ phone: '', emails: '' })
+const hotelData = ref(null)
 const currentImageIndex = ref(0)
 const lightboxOpen = ref(false)
 const lightboxIndex = ref(0)
 const bookingForm = ref({ checkIn: '', checkOut: '', guests: '2' })
+
+const etablissement = computed(() => hotelData.value?.etablissment || hotelData.value?.etablissement || {})
+const hotelCheckIn = computed(() => etablissement.value?.pCheckIn || '15:00')
+const hotelCheckOut = computed(() => etablissement.value?.pCheckOut || '12:00')
+const smokingLabel = computed(() => room.value?.isFumeur ? t.value.chambrefumeur : t.value.interdictiondefumer)
 
 // ── Calendar ─────────────────────────────────────────────────────────────────
 const CAL_DAYS   = ['Mo','Tu','We','Th','Fr','Sa','Su']
@@ -536,7 +540,7 @@ const dayBtnClass = (day) => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const STATIC_KEYS = [
-  'accueil', 'verifierladisponibilite', 'voirlesdetails', 'nuit', 'hebergements', 'gallery', 'contact', 'nosservices', 'checkin', 'checkout', 'nonfumeur', 'petsallowed',
+  'accueil', 'verifierladisponibilite', 'voirlesdetails', 'nuit', 'hebergements', 'gallery', 'contact', 'nosservices', 'checkin', 'checkout', 'nonfumeur', 'chambrefumeur', 'interdictiondefumer', 'petsallowed', 'backtotherooms',
 ]
 const t = ref({
   ...Object.fromEntries(STATIC_KEYS.map(k => [k, k])),
@@ -616,16 +620,18 @@ onMounted(async () => {
   window.addEventListener('keydown', handleKeydown)
   document.addEventListener('mousedown', handleCalClickOutside)
 
-  const { fetchHotelInfo, fetchRooms } = useHotel()
+  const { fetchHotelData, fetchHotelInfo, fetchRooms } = useHotel()
   
   const { loadCatalogue, transStatic } = useTranslations()
 
-  const [allRooms, info, catalogue] = await Promise.all([
+  const [allRooms, data, info, catalogue] = await Promise.all([
     fetchRooms(locale.value),
+    fetchHotelData(),
     fetchHotelInfo(),
     loadCatalogue(locale.value),
   ])
 
+  hotelData.value = data
   hotelInfo.value = info
 
   // Translate static keys
@@ -633,9 +639,9 @@ onMounted(async () => {
   for (const key of STATIC_KEYS) translated[key] = transStatic(key, catalogue)
   t.value = translated
 
-  // Find room by slug
+  // Find room by id
   const slug = route.params.slug
-  const found = allRooms.find(r => r.slug === slug)
+  const found = allRooms.find(r => String(r.id) === String(slug))
   if (found) {
     room.value = found
     similarRooms.value = allRooms.filter(r => r.id !== found.id).slice(0, 3)
