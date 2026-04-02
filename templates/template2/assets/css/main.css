@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Barlow:wght@300;400;500;600&display=swap');
+
+/* ── Design tokens ─────────────────────────────── */
+:root {
+  --t2-bg:        #0A0A0A;
+  --t2-bg-light:  #F5F5F5;
+  --t2-bg-mid:    #141414;
+  --t2-text:      #FFFFFF;
+  --t2-text-muted:#A0A0A0;
+  --t2-text-dark: #111111;
+  --t2-gold:      #C9A96E;
+  --t2-gold-light:#E8D5A3;
+  --t2-border:    rgba(255,255,255,0.1);
+  --t2-border-dark: rgba(0,0,0,0.1);
+}
+
+/* ── Base ──────────────────────────────────────── */
+.t2 { font-family: 'Barlow', sans-serif; color: var(--t2-text); background: var(--t2-bg); }
+.t2-light { font-family: 'Barlow', sans-serif; color: var(--t2-text-dark); background: var(--t2-bg-light); }
+
+/* ── Typography ────────────────────────────────── */
+.t2-heading { font-family: 'Cormorant Garamond', serif; }
+.t2-eyebrow {
+  font-family: 'Barlow', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--t2-gold);
+}
+
+/* ── Gold line separator ───────────────────────── */
+.t2-divider {
+  width: 40px; height: 1px;
+  background: var(--t2-gold);
+  margin: 1rem auto;
+}
+
+/* ── Button styles ─────────────────────────────── */
+.t2-btn-gold {
+  display: inline-block;
+  padding: 0.75rem 2.5rem;
+  border: 1px solid var(--t2-gold);
+  color: var(--t2-gold);
+  font-family: 'Barlow', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  background: transparent;
+}
+.t2-btn-gold:hover { background: var(--t2-gold); color: #0A0A0A; }
+
+.t2-btn-white {
+  display: inline-block;
+  padding: 0.75rem 2.5rem;
+  border: 1px solid rgba(255,255,255,0.6);
+  color: #fff;
+  font-family: 'Barlow', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  background: transparent;
+}
+.t2-btn-white:hover { background: #fff; color: #0A0A0A; }
+
+/* ── Card hover overlay ────────────────────────── */
+.t2-card-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.t2-card:hover .t2-card-overlay { opacity: 1; }
+
+/* ── Animations ────────────────────────────────── */
+@keyframes t2-fade-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.t2-fade-up { animation: t2-fade-up 0.8s ease both; }
