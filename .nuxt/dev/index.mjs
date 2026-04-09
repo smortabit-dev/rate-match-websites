@@ -3196,7 +3196,7 @@ const settings = defineEventHandler(async (event) => {
     req.headers.host || // fallback (localhost, domain, etc.)
     "";
     host = "riadchalla.com";
-    const externalUrl = `https://www.riadchalla.com/api/site-info?idEtab=14373`;
+    const externalUrl = `https://traduction.uncubus.tech/translations/?locales=fr&id=14373`;
     const response = await $fetch$1(externalUrl, {
       method: "GET"
     });

@@ -253,6 +253,18 @@ export const useTranslations = () => {
     trans(`${id}-${field}`, {}, `${ETAB_ID}_Surroundings`, catalogue, fallback)
 
   /**
+   * FAQ translation
+   * Twig: {{ (item.faqId ~ '-titer') | trans({}, idetab ~ '_Faq') }}
+   *
+   * @param {string|number} id       faq id
+   * @param {string}        field    'titer' | 'description'
+   * @param {object}        catalogue
+   * @param {string}        fallback
+   */
+  const transFaq = (id, field, catalogue, fallback = '') =>
+    trans(`${id}-${field}`, {}, `${ETAB_ID}_Faq`, catalogue, fallback)
+
+  /**
    * Static UI label translation
    * Twig: {{ 'gallery' | trans({}, idetab) }}
    * Domain in API: "static" → normalised to "12791_static"
@@ -343,6 +355,7 @@ export const useTranslations = () => {
     transChamberCarac,
     transGroupeCarac,
     transSurrounding,
+    transFaq,
     transStatic,
     getChamberTranslations,
     getEtabTranslations,

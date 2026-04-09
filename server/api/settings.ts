@@ -16,7 +16,8 @@ export default defineEventHandler(async (event) => {
         host = 'riadchalla.com'
 
         // ✅ Call the external API
-        const externalUrl = `https://www.riadchalla.com/api/site-info?idEtab=14373`
+        // const externalUrl = `https://www.riadchalla.com/api/site-info?idEtab=14373`
+        const externalUrl = `https://traduction.uncubus.tech/translations/?locales=fr&id=14373`
 
         const response = await $fetch(externalUrl, {
             method: 'GET',

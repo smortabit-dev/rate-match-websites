@@ -118,11 +118,12 @@ export const useHotel = () => {
     // 2. Data Retrieval & Mapping (formerly useHotelData)
     // ──────────────────────────────────────────────────────────────────────────
 
-    const fetchHotelData = async () => {
-        if (dataState.value) return dataState.value
-        if (dataFetchPromise) return dataFetchPromise
+    const fetchHotelData = async (force = false) => {
 
-        dataFetchPromise = (async () => {
+        if (dataState.value && !force) return dataState.value
+        if (dataFetchPromise && !force) return dataFetchPromise
+
+        const fetchAction = async () => {
             try {
                 const response = await $fetch(SETTINGS_API_URL)
                 // Direct API returns the object, proxy wraps it in .data
@@ -135,9 +136,18 @@ export const useHotel = () => {
             } finally {
                 dataFetchPromise = null
             }
-        })()
+        }
 
+        if (force) {
+            return await fetchAction()
+        }
+
+        dataFetchPromise = fetchAction()
         return dataFetchPromise
+    }
+
+    const clearCache = () => {
+        dataState.value = null
     }
 
     const fetchRooms = async (locale = 'en') => {
@@ -248,6 +258,34 @@ export const useHotel = () => {
             return useTranslations().getLandmarkTranslations(landmarkId, catalogue)
         } catch (error) {
             return getFallbackSurroundings()
+        }
+    }
+
+    const fetchFaq = async (locale = 'en') => {
+        try {
+            const [data, catalogue] = await Promise.all([
+                fetchHotelData(),
+                useTranslations().loadCatalogue(locale)
+            ])
+
+            console.log(data)
+
+            if (!data || !data.faq) return getFallbackFaq()
+
+            const rawFaqs = Array.isArray(data.faq) ? data.faq : Object.values(data.faq)
+            const { transFaq } = useTranslations()
+
+            return rawFaqs.map(item => {
+                const id = item.faqId || item.id
+                return {
+                    id,
+                    question: transFaq(id, 'titer', catalogue, item.question || ''),
+                    answer: transFaq(id, 'description', catalogue, item.answer || '')
+                }
+            }).filter(f => f.question)
+        } catch (error) {
+            console.error('Error fetching FAQ:', error)
+            return getFallbackFaq()
         }
     }
 
@@ -462,11 +500,14 @@ export const useHotel = () => {
         }
     ])
 
+    const getFallbackFaq = () => ([{ id: 1, question: 'Contact us', answer: 'Please contact us for any questions.' }])
+
     return {
         fetchHotelInfo, getSocialIcon,
-        fetchHotelData, fetchRooms, fetchComments, fetchGallery, fetchSurroundings, fetchServices,
+        fetchHotelData, fetchRooms, fetchComments, fetchGallery, fetchSurroundings, fetchServices, fetchFaq,
         fetchLanguages, fetchCurrencies,
         fetchSiteInfo, fetchAmenities, fetchOffers, checkAvailability, createBooking,
+        clearCache,
         ETAB_ID
     }
 }

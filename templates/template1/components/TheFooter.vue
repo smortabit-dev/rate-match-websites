@@ -99,7 +99,7 @@
           <div class="flex flex-wrap justify-center gap-6">
             <NuxtLink :to="localePath('/privacy-policy')" class="hover:text-white transition-colors">{{ t.privacypolicy }}</NuxtLink>
             <NuxtLink :to="localePath('/legal-notice')" class="hover:text-white transition-colors">{{ t.legalnotice }}</NuxtLink>
-            <NuxtLink :to="localePath('/cookie-policy')" class="hover:text-white transition-colors">{{ t.cookiepolicy }}</NuxtLink>
+            <NuxtLink :to="localePath('/sitemap')" class="hover:text-white transition-colors">{{ t.sitemap }}</NuxtLink>
           </div>
         </div>
       </div>
@@ -118,7 +118,7 @@ const name = ref('')
 const acceptPolicy = ref(false)
 const info = ref({ name: '', logo: null, address: '', city: '', country: '', phone: '', emails: '', socials: [] })
 
-const STATIC_KEYS = ['contact', 'hotel', 'privacy', 'legalinformation', 'cookiepolicy', 'newsletter', 'nom', 'entrervotrenom', 'email', 'entrervotreadressee-mail', 'envoyer']
+const STATIC_KEYS = ['contact', 'hotel', 'privacy', 'legalinformation', 'sitemap', 'newsletter', 'nom', 'entrervotrenom', 'email', 'entrervotreadressee-mail', 'envoyer']
 const t = ref(Object.fromEntries(STATIC_KEYS.map(k => [k, k])))
 
 onMounted(async () => {
