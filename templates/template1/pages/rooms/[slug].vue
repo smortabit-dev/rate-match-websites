@@ -351,7 +351,7 @@
             <div class="w-8 h-px bg-gray-800 mb-3"></div>
             <h3 class="text-lg sm:text-xl font-serif mb-1 group-hover:text-amber-700 transition-colors">{{ sr.name }}</h3>
             <p class="text-gray-400 text-sm mb-2">{{ sr.size }}m² · {{ sr.guests }} {{ t.guests }}</p>
-            <span class="text-lg font-serif text-amber-700">{{ sr.price }}€ <span class="text-xs text-gray-400 font-sans">/ {{ t.nuit }}</span></span>
+            <!-- <span class="text-lg font-serif text-amber-700">{{ sr.price }}€ <span class="text-xs text-gray-400 font-sans">/ {{ t.nuit }}</span></span> -->
           </NuxtLink>
         </div>
       </div>

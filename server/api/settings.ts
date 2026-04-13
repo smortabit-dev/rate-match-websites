@@ -1,38 +1,33 @@
-import { defineEventHandler } from 'h3'
+import { defineEventHandler, getQuery } from 'h3'
 import { $fetch } from 'ofetch'
 
 export default defineEventHandler(async (event) => {
     try {
-        // ✅ Get the host from the incoming client request
-        const req = event.node.req
-        let host =
-            req.headers['x-forwarded-host'] || // from proxies/load balancers
-            req.headers.host ||                // fallback (localhost, domain, etc.)
-            ''
+        const query = getQuery(event)
+        const idEtab = query.idEtab || '14373'
 
-        // The user explicitly set this in the prompt logic, 
-        // though usually we'd want to use the detected host.
-        // Keeping it as requested.
-        host = 'riadchalla.com'
+        const externalUrl = `https://www.riadchalla.com/api/site-info?idEtab=${idEtab}`
 
-        // ✅ Call the external API
-        // const externalUrl = `https://www.riadchalla.com/api/site-info?idEtab=14373`
-        const externalUrl = `https://traduction.uncubus.tech/translations/?locales=fr&id=14373`
+        console.log(`[proxy/settings] Fetching: ${externalUrl}`)
 
         const response = await $fetch(externalUrl, {
             method: 'GET',
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'application/json, text/plain, */*',
+                'Accept-Language': 'en-US,en;q=0.9',
+            }
         })
 
-        return {
-            success: true,
-            host: host,
-            data: response,
-        }
-    } catch (error) {
-        console.error('Error fetching site infos:', error)
+        console.log(`[proxy/settings] Success for ${idEtab}`)
+        // Return the actual data. Direct API usually returns the object directly.
+        return response
+    } catch (error: any) {
+        console.error('[proxy/settings] Error:', error?.message || String(error))
         return {
             success: false,
             message: 'Failed to load settings',
+            error: error?.message || String(error)
         }
     }
 })

@@ -9,7 +9,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <!-- Left: Text -->
           <div>
-            <p class="section-subtitle">{{ t.welcome_to }}</p>
+            <p class="section-subtitle">{{ t.welcome }}</p>
             <h1 class="section-title mb-6">{{ etab.name || info.name }}</h1>
             <div class="flex items-start gap-4 mb-6">
               <div class="w-12 h-px bg-amber-700 mt-3 flex-shrink-0"></div>
@@ -70,7 +70,7 @@ const info = ref({ name: '' })
 const etab = ref({ name: '', desc: '', slogan: '' })
 const aboutPhotos = ref([])
 
-const STATIC_KEYS = ['welcome_to']
+const STATIC_KEYS = ['welcome']
 const pageDesc = ref('')
 const t = ref(Object.fromEntries(STATIC_KEYS.map(k => [k, k])))
 

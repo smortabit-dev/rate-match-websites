@@ -30,7 +30,7 @@
  */
 
 const ETAB_ID = '14373'
-const TRANS_BASE = 'https://www.riadchalla.com/site/translations'
+const TRANS_BASE = '/api/translations'
 
 const fetchPromises = {}
 
@@ -52,16 +52,18 @@ export const useTranslations = () => {
 
     fetchPromises[locale] = (async () => {
       try {
-        const url = `${TRANS_BASE}?locales=${locale}&id=${ETAB_ID}`
+        // The new dedicated translations API supports CORS and does not need a local server proxy.
+        // It provides translations directly to the browser for all locales.
+        // IMPORTANT: The trailing slash after /translations/ is absolutely required to avoid a 301 redirect bug to HTTP!
+        const url = `https://traduction.rate-match.com/translations/?locales=${locale}&id=${ETAB_ID}`
+
         const raw = await $fetch(url)
         const catalogue = _normalise(raw, locale)
-        // console.log(`Catalogue for locale "${locale}":`, catalogue)
         cacheState.value[locale] = catalogue
-
-        // const totalKeys = Object.values(catalogue).reduce((n, d) => n + Object.keys(d).length, 0)
-        // console.log(`[trans] "${locale}" → ${Object.keys(catalogue).length} domains, ${totalKeys} keys`)
         return catalogue
-
+      } catch (error) {
+        console.warn(`[useTranslations] Failed to load "${locale}" catalogue:`, error?.message || error)
+        return {}
       } finally {
         delete fetchPromises[locale]
       }

@@ -7,7 +7,6 @@
         <p class="text-gray-500 text-sm tracking-wide">Loading...</p>
       </div>
     </div>
-
     <!-- Angular checkprice app entry point -->
     <app-root></app-root>
   </div>
@@ -153,6 +152,10 @@ onMounted(async () => {
   console.log(`Using Cpercente: ${cpercente} for etabCurrency: ${etabCurrency} and currency: ${currency}`)
 
   // Inject window.appConfig before Angular scripts load
+  // Use etablissementId from the API if available, otherwise fallback to the hardcoded config
+  const dynamicIdEtab = parseInt(etab.etablissementId || ETAB_ID)
+  const dynamicHosteImage = `https://rate.picscache.com/images/${dynamicIdEtab}/upload/`
+
   window.appConfig = {
     start:                 startDate.value,
     end:                   endDate.value,
@@ -166,8 +169,8 @@ onMounted(async () => {
     defaultSelectCurrency: currency,
     promo:                 true,
     defaultlangue:         locale.value,
-    idEtab:                parseInt(ETAB_ID),
-    hosteimage:            HOSTE_IMAGE,
+    idEtab:                dynamicIdEtab,
+    hosteimage:            dynamicHosteImage,
     hosteimageimg:         HOSTE_IMAGE_IMG,
     host:                  hosts + '/',
     apihost:               hosts,

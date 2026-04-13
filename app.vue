@@ -1,7 +1,7 @@
 <template>
   <div>
     <NuxtLayout>
-      <NuxtPage />
+      <NuxtPage :page-key="route => route.fullPath" />
     </NuxtLayout>
 
     <TemplateSwitcher v-if="showTemplateSwitcher" />
@@ -25,7 +25,7 @@ const { data: ready } = await useAsyncData('init-data', async () => {
     loadCatalogue(locale.value)
   ])
   return true
-})
+}, { watch: [locale] })
 
 const hotelInfo = useState('hotel-info')
 

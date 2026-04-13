@@ -2914,14 +2914,12 @@ const _964Wmw = defineCachedEventHandler(async (event) => {
 });
 
 const _lazy_Nmdn4f = () => Promise.resolve().then(function () { return settings$1; });
-const _lazy_nHRa2e = () => Promise.resolve().then(function () { return translations$1; });
 const _lazy_VnVN26 = () => Promise.resolve().then(function () { return renderer$1; });
 
 const handlers = [
   { route: '', handler: _YQzFZ9, lazy: false, middleware: true, method: undefined },
   { route: '', handler: _MtR2iA, lazy: false, middleware: true, method: undefined },
   { route: '/api/settings', handler: _lazy_Nmdn4f, lazy: true, middleware: false, method: undefined },
-  { route: '/api/translations', handler: _lazy_nHRa2e, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_error', handler: _lazy_VnVN26, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_island/**', handler: _SxA8c9, lazy: false, middleware: false, method: undefined },
   { route: '/api/_nuxt_icon/:collection', handler: _964Wmw, lazy: false, middleware: false, method: undefined },
@@ -3191,25 +3189,26 @@ const styles$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
 
 const settings = defineEventHandler(async (event) => {
   try {
-    const req = event.node.req;
-    let host = req.headers["x-forwarded-host"] || // from proxies/load balancers
-    req.headers.host || // fallback (localhost, domain, etc.)
-    "";
-    host = "riadchalla.com";
-    const externalUrl = `https://traduction.uncubus.tech/translations/?locales=fr&id=14373`;
+    const query = getQuery$1(event);
+    const idEtab = query.idEtab || "14373";
+    const externalUrl = `https://www.riadchalla.com/api/site-info?idEtab=${idEtab}`;
+    console.log(`[proxy/settings] Fetching: ${externalUrl}`);
     const response = await $fetch$1(externalUrl, {
-      method: "GET"
+      method: "GET",
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept": "application/json, text/plain, */*",
+        "Accept-Language": "en-US,en;q=0.9"
+      }
     });
-    return {
-      success: true,
-      host,
-      data: response
-    };
+    console.log(`[proxy/settings] Success for ${idEtab}`);
+    return response;
   } catch (error) {
-    console.error("Error fetching site infos:", error);
+    console.error("[proxy/settings] Error:", (error == null ? void 0 : error.message) || String(error));
     return {
       success: false,
-      message: "Failed to load settings"
+      message: "Failed to load settings",
+      error: (error == null ? void 0 : error.message) || String(error)
     };
   }
 });
@@ -3217,30 +3216,6 @@ const settings = defineEventHandler(async (event) => {
 const settings$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: settings
-}, Symbol.toStringTag, { value: 'Module' }));
-
-const translations = defineEventHandler(async (event) => {
-  try {
-    const query = getQuery$1(event);
-    const locale = query.locales || "en";
-    const id = query.id || "11232";
-    const externalUrl = `https://traduction.uncubus.tech/translations/?locales=${locale}&id=${id}`;
-    const response = await $fetch$1(externalUrl, {
-      method: "GET"
-    });
-    return response;
-  } catch (error) {
-    console.error("Error fetching translations:", error);
-    return {
-      success: false,
-      message: "Failed to load translations"
-    };
-  }
-});
-
-const translations$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
-  __proto__: null,
-  default: translations
 }, Symbol.toStringTag, { value: 'Module' }));
 
 function renderPayloadResponse(ssrContext) {

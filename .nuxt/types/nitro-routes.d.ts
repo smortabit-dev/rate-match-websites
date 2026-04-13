@@ -6,9 +6,6 @@ declare module "nitropack/types" {
     '/api/settings': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/settings').default>>>>
     }
-    '/api/translations': {
-      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/translations').default>>>>
-    }
     '/__nuxt_error': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../node_modules/@nuxt/nitro-server/dist/runtime/handlers/renderer').default>>>>
     }

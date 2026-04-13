@@ -5,7 +5,7 @@
 
 export const ETAB_ID   = '14373'
 export const API_BASE  = 'https://www.riadchalla.com'
-export const API_URL   = `${API_BASE}/api/site-info?idEtab=${ETAB_ID}`
+export const API_URL   = `/api/settings?idEtab=${ETAB_ID}`
 
 export const IMAGE_CDN      = 'https://rate.picscache.com/'
 export const IMAGE_BASE     = `${IMAGE_CDN}images/${ETAB_ID}/upload/`

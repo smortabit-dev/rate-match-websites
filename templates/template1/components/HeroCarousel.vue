@@ -23,7 +23,7 @@
     <!-- Content Overlay — centered -->
     <div class="relative h-full flex items-center justify-start text-white z-10">
       <div class="text-left fade-in-up px-6">
-        <p class="section-subtitle text-amber-300 mb-4">{{ t.welcome_to }}</p>
+        <p class="section-subtitle text-amber-300 mb-4">{{ t.welcome }}</p>
         <h1 class="text-3xl md:text-5xl lg:text-7xl mb-8 leading-tight font-serif capitalize">
           {{ info.name }}
         </h1>
@@ -65,7 +65,7 @@ const widgetCode = ref('')
 const selectedCurrency = useCurrency()
 let intervalId = null
 
-const STATIC_KEYS = ['welcome_to', 'reserveroom', 'voirlesdetails']
+const STATIC_KEYS = ['welcome', 'reserveroom', 'voirlesdetails']
 const t = ref(Object.fromEntries(STATIC_KEYS.map(k => [k, k])))
 
 const { localePath, locale } = useLocale()
