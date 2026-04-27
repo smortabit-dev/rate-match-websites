@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-50 pt-24 sm:pt-36">
     <!-- Content -->
     <div class="container mx-auto px-4 sm:px-6 py-10 sm:py-16 max-w-3xl">
-      <h2 class="text-3xl sm:text-4xl font-serif text-gray-900 mb-10 text-center">{{ t.faq }}</h2>
+      <h2 class="text-3xl sm:text-4xl font-serif text-gray-900 mb-10 text-center">{{ t.faqtitre }}</h2>
 
       <div class="space-y-4">
         <div v-for="(item, idx) in faqs" :key="idx"
@@ -28,7 +28,7 @@ const { locale } = useLocale()
 const { loadCatalogue, transStatic } = useTranslations()
 const { fetchFaq } = useHotel()
 
-const STATIC_KEYS = ['retour', 'faq']
+const STATIC_KEYS = ['retour', 'faqtitre']
 const t = ref(Object.fromEntries(STATIC_KEYS.map(k => [k, k])))
 
 const openIndex = ref(null)

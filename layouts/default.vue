@@ -19,6 +19,13 @@
       <slot />
     </template>
 
+    <!-- Template 4 Components -->
+    <template v-else-if="currentTemplate === 'template4'">
+      <TheHeaderT4 />
+      <slot />
+      <TheFooterT4 />
+    </template>
+
     <!-- Default fallback -->
     <template v-else>
       <TheHeaderT1 />
@@ -36,6 +43,8 @@ import TheHeaderT1 from '../templates/template1/components/TheHeader.vue'
 import TheFooterT1 from '../templates/template1/components/TheFooter.vue'
 import TheHeaderT2 from '../templates/template2/components/TheHeader.vue'
 import TheFooterT2 from '../templates/template2/components/TheFooter.vue'
+import TheHeaderT4 from '../templates/template4/components/TheHeader.vue'
+import TheFooterT4 from '../templates/template4/components/TheFooter.vue'
 
 const currentTemplate = ref('template1')
 
@@ -43,7 +52,7 @@ const currentTemplate = ref('template1')
 onMounted(() => {
   if (process.client) {
     const saved = localStorage.getItem('selectedTemplate')
-    if (saved && ['template1', 'template2', 'template3'].includes(saved)) {
+    if (saved && ['template1', 'template2', 'template3', 'template4'].includes(saved)) {
       currentTemplate.value = saved
     }
     

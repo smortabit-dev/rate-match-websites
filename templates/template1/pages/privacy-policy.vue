@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-gray-50 pt-24 sm:pt-36">
     <div class="container mx-auto px-4 sm:px-6 py-10 sm:py-16 max-w-3xl">
-      <h2 class="text-3xl sm:text-4xl font-serif text-gray-900 mb-10 text-center">{{ t.privacypolicy }}</h2>
+      <h2 class="text-3xl sm:text-4xl font-serif text-gray-900 mb-10 text-center">{{ t.privacy }}</h2>
       
       <div v-if="t.confidentialite" class="prose prose-gray max-w-none text-sm text-gray-600 leading-relaxed"
            v-html="t.confidentialite"></div>
@@ -17,7 +17,7 @@ import { ref, onMounted } from 'vue'
 const { locale } = useLocale()
 const { loadCatalogue, transStatic } = useTranslations()
 
-const STATIC_KEYS = ['privacypolicy', 'confidentialite']
+const STATIC_KEYS = ['privacy', 'confidentialite']
 const t = ref(Object.fromEntries(STATIC_KEYS.map(k => [k, k])))
 
 onMounted(async () => {

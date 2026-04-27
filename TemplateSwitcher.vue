@@ -92,6 +92,30 @@
                 <span class="text-xs text-gray-500">Cormorant Garamond</span>
               </div>
             </button>
+ 
+             <!-- Template 4 -->
+             <button 
+               @click="switchTemplate('template4')"
+               class="w-full text-left p-4 rounded-lg border-2 transition-all"
+               :class="currentTemplate === 'template4' 
+                 ? 'border-blue-600 bg-blue-50' 
+                 : 'border-gray-200 hover:border-gray-300'"
+             >
+               <div class="flex items-center justify-between mb-2">
+                 <h3 class="font-bold">Template 4: Bella Drina</h3>
+                 <Icon 
+                   v-if="currentTemplate === 'template4'" 
+                   name="mdi:check-circle" 
+                   class="text-blue-600 text-xl"
+                 />
+               </div>
+               <p class="text-xs text-gray-600 mb-2">Premium, modern design</p>
+               <div class="flex items-center space-x-2">
+                 <div class="w-4 h-4 rounded-full bg-[#002B5B]" title="Navy Blue"></div>
+                 <div class="w-4 h-4 rounded-full bg-blue-500" title="Bright Blue"></div>
+                 <span class="text-xs text-gray-500">Playfair Display</span>
+               </div>
+             </button>
 
             <!-- Info -->
             <div class="pt-3 border-t border-gray-200">

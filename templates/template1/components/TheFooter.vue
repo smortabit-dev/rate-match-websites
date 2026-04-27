@@ -97,8 +97,6 @@
         <div class="flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 gap-4">
           <p>&copy; {{ new Date().getFullYear() }} {{ info.name || 'Hotel' }}. All rights reserved.</p>
           <div class="flex flex-wrap justify-center gap-6">
-            <NuxtLink :to="localePath('/privacy-policy')" class="hover:text-white transition-colors">{{ t.privacypolicy }}</NuxtLink>
-            <NuxtLink :to="localePath('/legal-notice')" class="hover:text-white transition-colors">{{ t.legalnotice }}</NuxtLink>
             <NuxtLink :to="localePath('/sitemap')" class="hover:text-white transition-colors">{{ t.sitemap }}</NuxtLink>
           </div>
         </div>
