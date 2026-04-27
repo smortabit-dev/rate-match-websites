@@ -56,7 +56,7 @@
     <LazyAmenitiesSection id="amenities" />
 
     <!-- Gallery -->
-    <LazyGallerySection id="gallery" />
+    <LazyGallerySection id="galerie" />
 
     <!-- Location & Surroundings -->
     <LazyLocationMap id="contact" />
@@ -94,7 +94,7 @@ onMounted(async () => {
   const translated = {}
   for (const key of STATIC_KEYS) translated[key] = transStatic(key, catalogue)
   t.value = translated
-  const rawDesc = trans('61402-description', {}, `${ETAB_ID}_Page`, catalogue, '')
+  const rawDesc = trans('58752-description', {}, `${ETAB_ID}_Page`, catalogue, '')
   const tmp = document.createElement('div')
   tmp.innerHTML = rawDesc
   pageDesc.value = tmp.innerHTML

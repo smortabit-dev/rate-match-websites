@@ -136,26 +136,30 @@ const currencies = ref([])
 const selectedCurrency = useCurrency()
 const currencySearch = ref('')
 
-const STATIC_KEYS = ['verifierladisponibilite', 'accueil', 'noschambres', 'customerscomments', 'nosservices', 'facilities', 'gallery', 'contact']
+const STATIC_KEYS = ['verifierladisponibilite', 'accueil', 'noschambres', 'customerscomments', 'nosservices', 'facilities', 'galerie', 'contact']
 const t = ref(Object.fromEntries(STATIC_KEYS.map(k => [k, k])))
 
 const dynamicPages = ref([])
+const faqLabel = ref('FAQ')
+const hasFaq = ref(false)
 
 const fetchHeaderData = async () => {
-  const { fetchCurrencies, fetchGallery, fetchHotelInfo, fetchNavigationPages } = useHotel()
-  const { loadCatalogue, transStatic } = useTranslations()
+  const { fetchCurrencies, fetchGallery, fetchHotelInfo, fetchNavigationPages, fetchFaq, ETAB_ID } = useHotel()
+  const { loadCatalogue, transStatic, transEtab } = useTranslations()
   
-  const [hotelInfo, catalogue, gallery, currList, navPages] = await Promise.all([
+  const [hotelInfo, catalogue, gallery, currList, navPages, faqData] = await Promise.all([
     fetchHotelInfo(),
     loadCatalogue(locale.value),
     fetchGallery(),
     fetchCurrencies(),
-    fetchNavigationPages(locale.value)
+    fetchNavigationPages(locale.value),
+    fetchFaq(locale.value)
   ])
   
   info.value = hotelInfo
   currencies.value = currList
   dynamicPages.value = navPages
+  hasFaq.value = faqData && faqData.length > 0 && faqData[0].id !== 1 // Filter out fallback
   if (!selectedCurrency.value) selectedCurrency.value = hotelInfo.currency || 'EUR'
   
   const translated = {}
@@ -163,6 +167,9 @@ const fetchHeaderData = async () => {
     translated[key] = transStatic(key, catalogue)
   }
   t.value = translated
+  
+  // Custom FAQ label from static domain: faq2
+  faqLabel.value = transStatic('faq2', catalogue, 'FAQ')
 
   // Combine gallery images with some generic page images if needed
   if (gallery.length > 0) {
@@ -217,9 +224,13 @@ const navigation = computed(() => {
     { name: t.value.noschambres,       section: 'rooms', url: '#' },
     { name: t.value.nosservices,       section: 'services', url: '#' },
     { name: t.value.facilities,        section: 'amenities', url: '#' },
-    { name: t.value.gallery,           section: 'gallery', url: '#' },
+    { name: t.value.galerie,           section: 'galerie', url: '#' },
     { name: t.value.contact,           section: 'contact', url: '#' },
   ]
+
+  if (hasFaq.value) {
+    baseNav.push({ name: faqLabel.value, section: 'faq', url: '/faq' })
+  }
   
   // Map dynamic pages to navigation structure
   const extraNav = dynamicPages.value.map(p => ({
