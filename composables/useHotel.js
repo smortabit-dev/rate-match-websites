@@ -98,8 +98,8 @@ export const useHotel = () => {
             try {
                 // Smart Routing: Use direct external URL on server (SSR) to avoid 502/Proxy issues
                 // Use local proxy on client to avoid CORS.
-                const url = process.server 
-                    ? `https://www.riadchalla.com/api/site-info?idEtab=${ETAB_ID}`
+                const url = process.server
+                    ? `https://www.darelmarsa.com/api/site-info?idEtab=${ETAB_ID}`
                     : SETTINGS_API_URL
 
                 const response = await $fetch(url)
@@ -111,11 +111,11 @@ export const useHotel = () => {
                 throw new Error('Empty API response')
             } catch (err) {
                 console.warn(`[useHotel] ${process.server ? 'Server' : 'Proxy'} fetchHotelInfo failed, checking client-side fallback...`, err.message || err)
-                
+
                 // 2. Client-side Fallback
                 if (process.client) {
                     try {
-                        const fallbackUrl = `https://www.riadchalla.com/api/site-info?idEtab=${ETAB_ID}`
+                        const fallbackUrl = `https://www.darelmarsa.com/api/site-info?idEtab=${ETAB_ID}`
                         const response = await $fetch(fallbackUrl)
                         const mapped = _mapInfo(response)
                         if (mapped) {
@@ -153,7 +153,7 @@ export const useHotel = () => {
             try {
                 // Smart Routing: Direct on server, Proxy on client
                 const url = process.server
-                    ? `https://www.riadchalla.com/api/site-info?idEtab=${ETAB_ID}`
+                    ? `https://www.darelmarsa.com/api/site-info?idEtab=${ETAB_ID}`
                     : SETTINGS_API_URL
 
                 const response = await $fetch(url)
@@ -163,11 +163,11 @@ export const useHotel = () => {
                 throw new Error('Empty API data')
             } catch (error) {
                 console.warn(`[useHotel] ${process.server ? 'Server' : 'Proxy'} fetchHotelData failed, checking client-side fallback...`, error.message || error)
-                
+
                 // 2. Client-side Fallback
                 if (process.client) {
                     try {
-                        const fallbackUrl = `https://www.riadchalla.com/api/site-info?idEtab=${ETAB_ID}`
+                        const fallbackUrl = `https://www.darelmarsa.com/api/site-info?idEtab=${ETAB_ID}`
                         const response = await $fetch(fallbackUrl)
                         const raw = response?.data || response
                         dataState.value = raw?.data || raw
@@ -360,6 +360,52 @@ export const useHotel = () => {
         } catch (error) { return [] }
     }
 
+    /**
+     * Fetch dynamic pages for SEO and information from uncubus tech API
+     */
+    const fetchDynamicPages = async () => {
+        try {
+            const url = `https://traduction.rate-match.com/infos-referencement/${ETAB_ID}`
+            const response = await $fetch(url)
+            // Handle { referencement: { "32": { ... } } }
+            const raw = response?.referencement || response?.data || response || {}
+            console.log('raw', raw)
+            return Object.values(raw)
+        } catch (error) {
+            console.warn('[useHotel] Failed to fetch dynamic pages:', error)
+            return []
+        }
+    }
+
+    /**
+     * Returns pages that should be displayed in navigation
+     */
+    const fetchNavigationPages = async (locale = 'en') => {
+        const [pages, catalogue] = await Promise.all([
+            fetchDynamicPages(),
+            useTranslations().loadPagesCatalogue(locale)
+        ])
+
+        if (!Array.isArray(pages)) return []
+        const { transPage } = useTranslations()
+
+        return pages
+            .filter(p => p.refStatus === true || p.refStatus === 1) // Using refStatus as visibility
+            .map(p => {
+                const id = p.refId
+                const name = transPage(id, 'titer', catalogue, p.refPermalink || 'Page')
+                return {
+                    id,
+                    slug: p.refPermalink || generateSlug(name),
+                    name,
+                    isExternal: !!p.refRedirectionUrl && p.refRedirectionUrl.startsWith('http'),
+                    url: (p.refRedirectionUrl && p.refRedirectionUrl.startsWith('http'))
+                        ? p.refRedirectionUrl
+                        : `/pages/${p.refPermalink || id}`
+                }
+            })
+    }
+
     const generateSlug = (name) => name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
     const determineCategoryFromName = (name) => {
         if (!name) return 'STANDARD'
@@ -408,19 +454,19 @@ export const useHotel = () => {
         return comments
     }
 
-    const getDefaultImages = () => [ 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1200', 'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=1200' ]
+    const getDefaultImages = () => ['https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1200', 'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=1200']
     const getDefaultFeatures = () => ['Free WiFi', 'Air conditioning', 'Smart TV', 'Mini bar', 'Safe']
     const getFallbackRooms = () => ([{ id: 1, slug: 'classic-room', name: 'Classic Room', category: 'STANDARD', price: 180, images: getDefaultImages(), features: getDefaultFeatures() }])
     const getFallbackComments = () => ([{ text: "Amazing hotel!", name: "Sarah", source: "TripAdvisor", rating: 5 }])
     const getFallbackGallery = () => ([{ id: 1, url: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200' }])
     const getFallbackServices = () => ([{ id: 1, name: 'Restaurants', services: [{ id: 1, name: 'International' }] }])
-    const getFallbackSurroundings = () => ([ { name: "What's nearby", places: [ { name: 'City Center', distance: '2 km', detail: null }, { name: 'Main Square', distance: '3 km', detail: null } ] } ])
+    const getFallbackSurroundings = () => ([{ name: "What's nearby", places: [{ name: 'City Center', distance: '2 km', detail: null }, { name: 'Main Square', distance: '3 km', detail: null }] }])
     const getFallbackFaq = () => ([{ id: 1, question: 'Contact us', answer: 'Please contact us for any questions.' }])
 
     return {
         fetchHotelInfo, getSocialIcon,
         fetchHotelData, fetchRooms, fetchComments, fetchGallery, fetchSurroundings, fetchServices, fetchFaq,
-        fetchLanguages, fetchCurrencies,
+        fetchLanguages, fetchCurrencies, fetchDynamicPages, fetchNavigationPages,
         clearCache, ETAB_ID
     }
 }

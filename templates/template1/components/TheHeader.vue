@@ -66,18 +66,12 @@
   <!-- Menu Panel -->
   <transition name="menu-slide">
     <div v-if="menuOpen" class="fixed inset-0 sm:bottom-auto z-40 bg-white shadow-xl overflow-y-auto">
-      <!-- Hotel name under logo -->
-      <div class="text-center pt-24 sm:pt-32 pb-4 sm:pb-8">
-        <!-- <p class="text-xs tracking-[0.3em] uppercase text-gray-500">The</p>
-        <h2 class="text-3xl md:text-4xl font-serif font-bold uppercase tracking-wide text-gray-900">{{ info.name || 'Hotel' }}</h2>
-        <p v-if="info.city" class="text-xs tracking-[0.3em] uppercase text-gray-400 mt-1">{{ info.city }}</p> -->
-      </div>
-
+      <div class="text-center pt-24 sm:pt-32 pb-4 sm:pb-8"></div>
       <!-- Navigation as image cards -->
       <div class="container mx-auto px-6 pb-16">
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-          <a v-for="(item, idx) in navigation" :key="item.section" href="#"
-             @click.prevent="scrollToSection(item.section)"
+          <a v-for="(item, idx) in navigation" :key="item.section" :href="item.url || '#'"
+             @click.prevent="scrollToSection(item)"
              class="group text-center cursor-pointer">
             <div class="aspect-[3/4] overflow-hidden mb-3">
               <img v-if="menuImages[idx]" :src="menuImages[idx]" :alt="item.name"
@@ -87,7 +81,7 @@
               </div>
             </div>
             <div class="w-8 h-px bg-gray-800 mx-auto mb-2"></div>
-            <span class="text-sm font-serif text-gray-800 group-hover:text-amber-700 transition-colors">{{ item.name }}</span>
+            <span class="text-sm font-serif text-gray-800 group-hover:text-amber-700 transition-colors uppercase tracking-widest">{{ item.name }}</span>
           </a>
         </div>
       </div>
@@ -96,7 +90,7 @@
 
   <ReservationModal v-if="reservationOpen" @close="reservationOpen = false" />
 
-  <!-- Currency Panel (slide from right) -->
+  <!-- Currency Panel -->
   <transition name="slide-panel">
     <div v-if="currencyPanelOpen" class="fixed inset-0 z-[60] flex justify-end">
       <div class="absolute inset-0 bg-black/60" @click="currencyPanelOpen = false"></div>
@@ -107,13 +101,11 @@
         </button>
         <div class="p-6 sm:p-8">
           <h3 class="text-xl font-serif mb-6">Currency</h3>
-          <!-- Search -->
           <div class="relative mb-6">
             <Icon name="mdi:magnify" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
             <input v-model="currencySearch" type="text" placeholder="Search..."
                    class="w-full pl-10 pr-4 py-2.5 border border-gray-200 text-sm focus:border-amber-700 focus:outline-none" />
           </div>
-          <!-- Currency list -->
           <div class="space-y-1">
             <button v-for="curr in filteredCurrencies" :key="curr.cCode"
                     @click="selectCurrency(curr.cCode)"
@@ -133,6 +125,7 @@
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import ReservationModal from './ReservationModal.vue'
 
+const { locale, localePath } = useLocale()
 const scrolled = ref(false)
 const menuOpen = ref(false)
 const reservationOpen = ref(false)
@@ -142,6 +135,52 @@ const currencyPanelOpen = ref(false)
 const currencies = ref([])
 const selectedCurrency = useCurrency()
 const currencySearch = ref('')
+
+const STATIC_KEYS = ['verifierladisponibilite', 'accueil', 'noschambres', 'customerscomments', 'nosservices', 'facilities', 'gallery', 'contact']
+const t = ref(Object.fromEntries(STATIC_KEYS.map(k => [k, k])))
+
+const dynamicPages = ref([])
+
+const fetchHeaderData = async () => {
+  const { fetchCurrencies, fetchGallery, fetchHotelInfo, fetchNavigationPages } = useHotel()
+  const { loadCatalogue, transStatic } = useTranslations()
+  
+  const [hotelInfo, catalogue, gallery, currList, navPages] = await Promise.all([
+    fetchHotelInfo(),
+    loadCatalogue(locale.value),
+    fetchGallery(),
+    fetchCurrencies(),
+    fetchNavigationPages(locale.value)
+  ])
+  
+  info.value = hotelInfo
+  currencies.value = currList
+  dynamicPages.value = navPages
+  if (!selectedCurrency.value) selectedCurrency.value = hotelInfo.currency || 'EUR'
+  
+  const translated = {}
+  for (const key of STATIC_KEYS) {
+    translated[key] = transStatic(key, catalogue)
+  }
+  t.value = translated
+
+  // Combine gallery images with some generic page images if needed
+  if (gallery.length > 0) {
+    menuImages.value = gallery.map(img => img.url)
+  }
+}
+
+onMounted(() => {
+  fetchHeaderData()
+  window.addEventListener('scroll', handleScroll)
+})
+
+onUnmounted(() => window.removeEventListener('scroll', handleScroll))
+
+// IMPORTANT: Reactive translations update
+watch(locale, () => {
+  fetchHeaderData()
+})
 
 const filteredCurrencies = computed(() => {
   const q = currencySearch.value.toLowerCase()
@@ -157,70 +196,61 @@ const selectCurrency = (code) => {
   currencySearch.value = ''
 }
 
-const STATIC_KEYS = ['verifierladisponibilite', 'accueil', 'noschambres', 'customerscomments', 'nosservices', 'facilities', 'gallery', 'contact']
-const t = ref(Object.fromEntries(STATIC_KEYS.map(k => [k, k])))
-
-onMounted(async () => {
-  const { fetchCurrencies, fetchGallery, fetchHotelInfo } = useHotel()
-  
-  const { loadCatalogue, transStatic } = useTranslations()
-  const [hotelInfo, catalogue, gallery, currList] = await Promise.all([
-    fetchHotelInfo(),
-    loadCatalogue(locale.value),
-    fetchGallery(),
-    fetchCurrencies(),
-  ])
-  info.value = hotelInfo
-  currencies.value = currList
-  selectedCurrency.value = hotelInfo.currency || 'EUR'
-  const translated = {}
-  for (const key of STATIC_KEYS) translated[key] = transStatic(key, catalogue)
-  t.value = translated
-
-  // Pick gallery images for menu nav items
-  if (gallery.length > 0) {
-    menuImages.value = gallery.slice(0, 7).map(img => img.url)
-  }
-
-  handleScroll()
-  window.addEventListener('scroll', handleScroll)
-})
-onUnmounted(() => window.removeEventListener('scroll', handleScroll))
-
 const handleScroll = () => { scrolled.value = !isHomePage.value || window.scrollY > 50 }
 const openReservation = () => { reservationOpen.value = true; menuOpen.value = false }
 
-// Lock body scroll when menu is open
 watch(menuOpen, (open) => {
   document.body.style.overflow = open ? 'hidden' : 'auto'
 })
 
 const route = useRoute()
-const { localePath, locale } = useLocale()
 
-// On non-home pages, force the "scrolled" (white bg) header state
 const isHomePage = computed(() => {
   const path = route.path.replace(/\/$/, '')
   const home = localePath('/').replace(/\/$/, '')
   return path === home
 })
 
-const navigation = computed(() => [
-  { name: t.value.accueil,           section: 'hero' },
-  { name: t.value.noschambres,       section: 'rooms' },
-  { name: t.value.customerscomments, section: 'testimonials' },
-  { name: t.value.nosservices,       section: 'services' },
-  { name: t.value.facilities,        section: 'amenities' },
-  { name: t.value.gallery,           section: 'gallery' },
-  { name: t.value.contact,           section: 'contact' },
-])
+const navigation = computed(() => {
+  const baseNav = [
+    { name: t.value.accueil,           section: 'hero', url: '#' },
+    { name: t.value.noschambres,       section: 'rooms', url: '#' },
+    { name: t.value.nosservices,       section: 'services', url: '#' },
+    { name: t.value.facilities,        section: 'amenities', url: '#' },
+    { name: t.value.gallery,           section: 'gallery', url: '#' },
+    { name: t.value.contact,           section: 'contact', url: '#' },
+  ]
+  
+  // Map dynamic pages to navigation structure
+  const extraNav = dynamicPages.value.map(p => ({
+     name: p.name,
+     section: p.slug,
+     url: p.url,
+     isDynamic: true,
+     isExternal: p.isExternal
+  }))
+
+  return [...baseNav, ...extraNav]
+})
 
 const router = useRouter()
 
-const scrollToSection = (sectionId) => {
+const scrollToSection = (item) => {
   menuOpen.value = false
+  
+  // 1. Handle dynamic pages or external links
+  if (item.isDynamic || (item.url && item.url !== '#')) {
+    if (item.isExternal) {
+      window.open(item.url, '_blank')
+    } else {
+      router.push(localePath(item.url))
+    }
+    return
+  }
+
+  // 2. Handle standard anchor scrolling
+  const sectionId = item.section
   if (!isHomePage.value) {
-    // Navigate to homepage with hash, then scroll after arrival
     router.push(localePath('/') + (sectionId === 'hero' ? '' : `#${sectionId}`))
     return
   }
@@ -236,19 +266,10 @@ const scrollToSection = (sectionId) => {
 </script>
 
 <style scoped>
-.menu-overlay-enter-active, .menu-overlay-leave-active {
-  transition: opacity 0.4s ease;
-}
-.menu-overlay-enter-from, .menu-overlay-leave-to {
-  opacity: 0;
-}
-.menu-slide-enter-active, .menu-slide-leave-active {
-  transition: transform 0.4s ease, opacity 0.4s ease;
-}
-.menu-slide-enter-from, .menu-slide-leave-to {
-  opacity: 0;
-  transform: translateY(-20px);
-}
+.menu-overlay-enter-active, .menu-overlay-leave-active { transition: opacity 0.4s ease; }
+.menu-overlay-enter-from, .menu-overlay-leave-to { opacity: 0; }
+.menu-slide-enter-active, .menu-slide-leave-active { transition: transform 0.4s ease, opacity 0.4s ease; }
+.menu-slide-enter-from, .menu-slide-leave-to { opacity: 0; transform: translateY(-20px); }
 .slide-panel-enter-active, .slide-panel-leave-active { transition: opacity 0.3s ease; }
 .slide-panel-enter-active > :last-child, .slide-panel-leave-active > :last-child { transition: transform 0.3s ease; }
 .slide-panel-enter-from, .slide-panel-leave-to { opacity: 0; }

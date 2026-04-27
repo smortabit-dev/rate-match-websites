@@ -2,7 +2,7 @@
  * useTranslations.js
  * ──────────────────
  * Loads the translation catalogue from:
- *   https://www.riadchalla.com/site/translations?locales={locale}&id=12791
+ *   https://www.darelmarsa.com/site/translations?locales={locale}&id=12791
  *
  * Mirrors the Twig filter syntax used in the backend:
  *
@@ -29,7 +29,7 @@
  *  {id}-literie  → bed type
  */
 
-const ETAB_ID = '14373'
+const ETAB_ID = '12791'
 const TRANS_BASE = '/api/translations'
 
 const fetchPromises = {}
@@ -344,8 +344,38 @@ export const useTranslations = () => {
     }
   }
 
+  /**
+   * Load the catalogue for dynamic info pages
+   */
+  const loadPagesCatalogue = async (locale = 'en') => {
+    const cacheKey = `pages-${locale}`
+    if (cacheState.value[cacheKey]) return cacheState.value[cacheKey]
+
+    try {
+      const url = `https://traduction.rate-match.com/infos-referencement/traduction?locales=${locale}&id=${ETAB_ID}`
+      const raw = await $fetch(url)
+
+      // Unwrap { translations: { [locale]: { Referencement: { ... } } } }
+      const catalogue = raw?.translations?.[locale] || raw?.data || raw || {}
+      cacheState.value[cacheKey] = catalogue
+      return catalogue
+    } catch (error) {
+      console.warn(`[useTranslations] Failed to load pages catalogue for "${locale}":`, error)
+      return {}
+    }
+  }
+
+  /**
+   * Helper to translate dynamic page fields
+   */
+  const transPage = (pageId, field, catalogue, fallback = '') => {
+    // The domain is "Referencement"
+    return trans(`${pageId}-${field}`, {}, 'Referencement', catalogue, fallback)
+  }
+
   return {
     loadCatalogue,
+    loadPagesCatalogue,
     trans,
     transChamber,
     transEtab,
@@ -359,6 +389,7 @@ export const useTranslations = () => {
     transSurrounding,
     transFaq,
     transStatic,
+    transPage,
     getChamberTranslations,
     getEtabTranslations,
     transLandmarkType,

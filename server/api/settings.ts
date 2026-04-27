@@ -4,9 +4,9 @@ import { $fetch } from 'ofetch'
 export default defineEventHandler(async (event) => {
     try {
         const query = getQuery(event)
-        const idEtab = query.idEtab || '14373'
+        const idEtab = query.idEtab || '12791'
 
-        const externalUrl = `https://www.riadchalla.com/api/site-info?idEtab=${idEtab}`
+        const externalUrl = `https://www.darelmarsa.com/api/site-info?idEtab=${idEtab}`
 
         console.log(`[proxy/settings] Fetching: ${externalUrl}`)
 
