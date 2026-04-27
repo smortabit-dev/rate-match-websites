@@ -24,10 +24,10 @@
               {{ t.backtotherooms }}
             </NuxtLink>
           </div>
-          <div v-if="room.category" class="flex items-center gap-3 mb-3">
+          <!-- <div v-if="room.category" class="flex items-center gap-3 mb-3">
             <div class="w-10 h-px bg-amber-400"></div>
             <span class="text-xs uppercase tracking-[0.2em] font-semibold text-amber-300">{{ room.category }}</span>
-          </div>
+          </div> -->
           <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-white leading-tight mb-4">{{ room.name }}</h1>
           <div class="flex flex-wrap gap-3 sm:gap-6 text-white/80 text-xs sm:text-sm">
             <span class="flex items-center gap-1">
@@ -285,9 +285,9 @@
                   <li class="flex items-center gap-3 text-sm text-gray-600">
                     <Icon name="mdi:bed" class="text-lg text-amber-700" /> {{ room.bedType }}
                   </li>
-                  <li class="flex items-center gap-3 text-sm text-gray-600">
+                  <!-- <li class="flex items-center gap-3 text-sm text-gray-600">
                     <Icon name="mdi:window-open" class="text-lg text-amber-700" /> {{ room.view }}
-                  </li>
+                  </li> -->
                 </ul>
               </div>
               <!-- Contact -->
@@ -344,9 +344,9 @@
             <div class="relative aspect-[3/4] overflow-hidden mb-4">
               <img :src="sr.image" :alt="sr.name"
                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-              <div v-if="sr.category" class="absolute top-4 left-4">
+              <!-- <div v-if="sr.category" class="absolute top-4 left-4">
                 <span class="text-xs uppercase tracking-[0.15em] font-semibold text-white bg-black/40 px-3 py-1">{{ sr.category }}</span>
-              </div>
+              </div> -->
             </div>
             <div class="w-8 h-px bg-gray-800 mb-3"></div>
             <h3 class="text-lg sm:text-xl font-serif mb-1 group-hover:text-amber-700 transition-colors">{{ sr.name }}</h3>

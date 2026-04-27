@@ -21,15 +21,15 @@
                  :style="{ width: `${100 / visibleCount}%` }">
               <div class="group cursor-pointer h-full flex flex-col">
                 <!-- Category label with line + price -->
-                <div class="flex items-center justify-between mb-4">
+                <!-- <div class="flex items-center justify-between mb-4">
                   <div v-if="room.category" class="flex items-center gap-3">
                     <div class="w-10 h-px bg-gray-800"></div>
                     <span class="text-xs uppercase tracking-[0.2em] font-semibold text-gray-700">{{ room.category }}</span>
                   </div>
-                  <!-- <span v-if="room.price" class="text-lg font-serif text-amber-700">
+                  <span v-if="room.price" class="text-lg font-serif text-amber-700">
                     {{ room.price }} <span class="text-xs text-gray-400 font-sans">/ {{ t.nuit }}</span>
-                  </span> -->
-                </div>
+                  </span>
+                </div> -->
                 <!-- Room Image with inner carousel -->
                 <div class="relative aspect-[3/3] overflow-hidden mb-6">
                   <div class="relative w-full h-full">
