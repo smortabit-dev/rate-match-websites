@@ -1,19 +1,19 @@
 <template>
   <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
-          :class="scrolled ? 'bg-white shadow-md py-2' : 'bg-transparent py-4'">
+      :class="scrolled ? 'bg-white shadow-md py-2' : 'bg-transparent py-4'">
     <div class="container mx-auto px-6">
       <div class="flex items-center justify-between">
         <!-- Left: Phone + Language -->
         <div class="flex items-center space-x-4 w-1/3">
-          <a v-if="info.phone" :href="`tel:${info.phone}`"
-             class="text-xs font-medium tracking-wide transition-colors hidden sm:inline"
+          <a v-if="info.phone" :href="`tel:${info.phone}`" dir="ltr"
+             class="text-xs font-medium ml-4 tracking-wide transition-colors hidden sm:inline-block"
              :class="menuOpen ? 'text-gray-700' : (scrolled ? 'text-gray-700' : 'text-white')">
             <Icon name="mdi:phone" class="text-sm mr-1 inline" />{{ info.phone }}
           </a>
           <LanguageSwitcher :class="menuOpen ? 'text-gray-700' : (scrolled ? 'text-gray-700' : 'text-white')" />
           <button @click="currencyPanelOpen = true"
-                  class="text-xs font-medium tracking-wide transition-colors flex items-center gap-1"
-                  :class="menuOpen ? 'text-gray-700' : (scrolled ? 'text-gray-700' : 'text-white')">
+              class="text-xs font-medium tracking-wide transition-colors flex items-center gap-1"
+              :class="menuOpen ? 'text-gray-700' : (scrolled ? 'text-gray-700' : 'text-white')">
             <Icon name="mdi:currency-usd" class="text-sm" />
             {{ selectedCurrency }}
             <Icon name="mdi:chevron-down" class="text-xs" />
@@ -24,16 +24,16 @@
         <!-- Right: Reservation + Burger/Close -->
         <div class="flex items-center justify-end space-x-4 w-1/3">
           <button @click="openReservation"
-                  class="hidden sm:inline-block px-5 py-2.5 text-xs uppercase tracking-[0.15em] font-semibold transition-all duration-300"
-                  :class="menuOpen
-                    ? 'border border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-white'
-                    : (scrolled
-                      ? 'bg-amber-700 text-white hover:bg-amber-800'
-                      : 'bg-white/10 backdrop-blur-sm text-white border border-white/40 hover:bg-white hover:text-gray-900')">
+            class="hidden sm:inline-block px-5 py-2.5 text-xs uppercase tracking-[0.15em] font-semibold transition-all duration-300"
+            :class="menuOpen
+              ? 'border border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-white'
+              : (scrolled
+                ? 'bg-amber-700 text-white hover:bg-amber-800'
+                : 'bg-white/10 backdrop-blur-sm text-white border border-white/40 hover:bg-white hover:text-gray-900')">
             {{ t.verifierladisponibilite }}
           </button>
           <button @click="menuOpen = !menuOpen" class="flex items-center gap-2 p-2 transition-colors"
-                  :class="menuOpen ? 'text-gray-900' : (scrolled ? 'text-gray-900' : 'text-white')">
+              :class="menuOpen ? 'text-gray-900' : (scrolled ? 'text-gray-900' : 'text-white')">
             <Icon v-if="menuOpen" name="mdi:close" class="text-2xl" />
             <Icon v-else name="mdi:menu" class="text-2xl" />
             <span v-if="menuOpen" class="text-xs uppercase tracking-[0.15em] font-semibold hidden sm:inline">{{ t.fermer }}</span>
@@ -45,13 +45,13 @@
 
   <!-- Fixed centered logo -->
   <NuxtLink :to="localePath('/')"
-            class="fixed top-0 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 pointer-events-auto"
-            :class="scrolled ? 'mt-1' : 'mt-3'">
+      class="fixed top-0 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 pointer-events-auto"
+      :class="scrolled ? 'mt-1' : 'mt-3'">
     <img v-if="info.logo" :src="info.logo" :alt="info.name"
-         class="w-auto object-contain transition-all"
-         :class="scrolled ? 'h-[50px] sm:h-[80px]' : 'h-[80px] sm:h-[150px]'" />
+      class="w-auto object-contain transition-all"
+      :class="scrolled ? 'h-[50px] sm:h-[80px]' : 'h-[80px] sm:h-[150px]'" />
     <div v-else class="font-serif text-center transition-colors"
-         :class="menuOpen ? 'text-gray-900' : (scrolled ? 'text-gray-900' : 'text-white')">
+        :class="menuOpen ? 'text-gray-900' : (scrolled ? 'text-gray-900' : 'text-white')">
       <span class="text-xs tracking-[0.3em] uppercase block">The</span>
       <span class="text-2xl font-bold block leading-tight">{{ info.name || 'Hotel' }}</span>
       <span v-if="info.city" class="text-[10px] tracking-[0.3em] uppercase block text-gray-400">{{ info.city }}</span>
@@ -96,7 +96,7 @@
       <div class="absolute inset-0 bg-black/60" @click="currencyPanelOpen = false"></div>
       <div class="relative w-full max-w-sm bg-white h-full overflow-y-auto shadow-2xl">
         <button @click="currencyPanelOpen = false"
-                class="absolute top-6 right-6 z-10 text-gray-400 hover:text-gray-800 transition-colors">
+            class="absolute top-6 right-6 z-10 text-gray-400 hover:text-gray-800 transition-colors">
           <Icon name="mdi:close" class="text-2xl" />
         </button>
         <div class="p-6 sm:p-8">
@@ -104,13 +104,13 @@
           <div class="relative mb-6">
             <Icon name="mdi:magnify" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
             <input v-model="currencySearch" type="text" placeholder="Search..."
-                   class="w-full pl-10 pr-4 py-2.5 border border-gray-200 text-sm focus:border-amber-700 focus:outline-none" />
+              class="w-full pl-10 pr-4 py-2.5 border border-gray-200 text-sm focus:border-amber-700 focus:outline-none" />
           </div>
           <div class="space-y-1">
             <button v-for="curr in filteredCurrencies" :key="curr.cCode"
-                    @click="selectCurrency(curr.cCode)"
-                    class="w-full flex items-center justify-between px-4 py-3 text-sm transition-colors hover:bg-gray-50"
-                    :class="selectedCurrency === curr.cCode ? 'bg-amber-50 text-amber-700' : 'text-gray-700'">
+                @click="selectCurrency(curr.cCode)"
+                class="w-full flex items-center justify-between px-4 py-3 text-sm transition-colors hover:bg-gray-50"
+                :class="selectedCurrency === curr.cCode ? 'bg-amber-50 text-amber-700' : 'text-gray-700'">
               <span class="font-medium">{{ curr.cCode }}</span>
               <span class="text-gray-400 text-xs capitalize">{{ curr.cNom }}</span>
             </button>

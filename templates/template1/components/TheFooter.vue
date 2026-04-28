@@ -69,15 +69,15 @@
         <div>
           <h4 class="text-xs uppercase tracking-[0.2em] font-semibold mb-6 text-amber-700">{{ t.hotel }}</h4>
           <ul class="space-y-3 text-sm text-gray-400">
-            <li><NuxtLink :to="localePath('/faq')" class="hover:text-white transition-colors">FAQ</NuxtLink></li>
-            <li><NuxtLink :to="localePath('/privacy-policy')" class="hover:text-white transition-colors">{{ t.privacy }}</NuxtLink></li>
-            <li><NuxtLink :to="localePath('/legal-notice')" class="hover:text-white transition-colors">{{ t.legalinformation }}</NuxtLink></li>
+            <li><NuxtLink :to="localePath('/faq')" class="hover:text-white transition-colors">{{ t.faq2 }}</NuxtLink></li>
+            <li><NuxtLink :to="localePath('/privacy-policy')" class="hover:text-white transition-colors">{{ t.politiquedeconfidentialite }}</NuxtLink></li>
+            <li><NuxtLink :to="localePath('/legal-notice')" class="hover:text-white transition-colors">{{ t.conditionsgenerales }}</NuxtLink></li>
           </ul>
         </div>
 
         <!-- Social -->
         <div>
-          <h4 class="text-xs uppercase tracking-[0.2em] font-semibold mb-6 text-amber-700">Follow Us</h4>
+          <h4 class="text-xs uppercase tracking-[0.2em] font-semibold mb-6 text-amber-700">{{ t.suiveznous }}</h4>
           <div class="flex gap-3">
             <a v-for="s in info.socials" :key="s.key"
                :href="s.url" target="_blank" rel="noopener noreferrer" :title="s.label"
@@ -95,7 +95,7 @@
         <div class="flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 gap-4">
           <p>&copy; {{ new Date().getFullYear() }} {{ info.name || 'Hotel' }}. All rights reserved.</p>
           <div class="flex flex-wrap justify-center gap-6">
-            <NuxtLink :to="localePath('/sitemap')" class="hover:text-white transition-colors">{{ t.sitemap }}</NuxtLink>
+            <NuxtLink :to="localePath('/sitemap')" class="hover:text-white transition-colors">{{ t.plandesite }}</NuxtLink>
           </div>
         </div>
       </div>
@@ -114,7 +114,7 @@ const name = ref('')
 const acceptPolicy = ref(false)
 const info = ref({ name: '', logo: null, address: '', city: '', country: '', phone: '', emails: '', socials: [] })
 
-const STATIC_KEYS = ['contact', 'hotel', 'privacy', 'legalinformation', 'sitemap', 'newsletter', 'nom', 'entrervotrenom', 'email', 'entrervotreadressee-mail', 'envoyer']
+const STATIC_KEYS = ['contact', 'hotel', 'politiquedeconfidentialite', 'suiveznous', 'faq2', 'conditionsgenerales', 'plandesite', 'newsletter', 'nom', 'entrervotrenom', 'email', 'entrervotreadressee-mail', 'envoyer']
 const t = ref(Object.fromEntries(STATIC_KEYS.map(k => [k, k])))
 
 onMounted(async () => {
