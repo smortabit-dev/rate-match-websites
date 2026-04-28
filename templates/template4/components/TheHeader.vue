@@ -7,7 +7,7 @@
     <div class="container mx-auto px-6">
       <div class="flex items-center justify-between lg:justify-end gap-6 mb-4 lg:mb-0">
         <div class="lg:hidden">
-           <NuxtLink :to="localePath('/')" class="block p-2 border border-white/20">
+           <NuxtLink :to="localePath('/')" class="block p-0 border border-white/20">
             <img v-if="info.logo" :src="info.logo" :alt="info.name" class="h-8 w-auto object-contain" />
             <span v-else class="text-white font-serif text-lg">Hotel</span>
           </NuxtLink>
@@ -32,8 +32,8 @@
 
       <div class="hidden lg:flex items-center justify-between">
         <!-- Logo Desktop (Boxed) -->
-        <NuxtLink :to="localePath('/')" class="relative z-10 block bg-black p-4 border border-white/20 transform hover:scale-105 transition-transform">
-          <img v-if="info.logo" :src="info.logo" :alt="info.name" class="h-20 w-auto object-contain" />
+        <NuxtLink :to="localePath('/')" class="relative z-10 block bg-black p-0 border border-white/20 transform hover:scale-105 transition-transform">
+          <img v-if="info.logo" :src="info.logo" :alt="info.name" class="h-35 w-auto object-contain" />
           <div v-else class="text-white text-center">
             <p class="text-[8px] uppercase tracking-[0.3em] mb-1">Luxury</p>
             <p class="text-xl font-serif font-bold italic">{{ info.name || 'Hotel' }}</p>

@@ -80,13 +80,14 @@ const aboutPhotosLeft = computed(() => aboutPhotos.value.filter((_, i) => i % 2 
 const aboutPhotosRight = computed(() => aboutPhotos.value.filter((_, i) => i % 2 === 1))
 
 onMounted(async () => {
-  const { fetchGallery, fetchHotelInfo } = useHotel()
+  const { fetchGallery, fetchHotelInfo, fetchHotelData } = useHotel()
   
   const { loadCatalogue, transStatic, trans, getEtabTranslations, ETAB_ID } = useTranslations()
-  const [hotelInfo, catalogue, gallery] = await Promise.all([
+  const [hotelInfo, catalogue, gallery, hotelData] = await Promise.all([
     fetchHotelInfo(),
     loadCatalogue(locale.value),
     fetchGallery(),
+    fetchHotelData()
   ])
   info.value = hotelInfo
   etab.value = getEtabTranslations(catalogue)
@@ -94,7 +95,9 @@ onMounted(async () => {
   const translated = {}
   for (const key of STATIC_KEYS) translated[key] = transStatic(key, catalogue)
   t.value = translated
-  const rawDesc = trans('58752-description', {}, `${ETAB_ID}_Page`, catalogue, '')
+
+  const pageId = hotelData?.page?.pId || '58752'
+  const rawDesc = trans(`${pageId}-description`, {}, `${ETAB_ID}_Page`, catalogue, '')
   const tmp = document.createElement('div')
   tmp.innerHTML = rawDesc
   pageDesc.value = tmp.innerHTML

@@ -328,12 +328,22 @@ export const useHotel = () => {
                     const svc = rawServices[sid]
                     const sId = svc.serviceId
                     const serImg = svc.serviceGalerie?.ser?.[0]?.imageUri
+                    
+                    const pdfs = []
+                    if (svc.serviceGalerie?.pdf) {
+                        const rawPdfs = Array.isArray(svc.serviceGalerie.pdf) ? svc.serviceGalerie.pdf : Object.values(svc.serviceGalerie.pdf)
+                        rawPdfs.forEach(p => {
+                            if (p.imageUrl) pdfs.push(p)
+                        })
+                    }
+
                     return {
                         id: sId, groupId, name: transService(sId, 'titer', catalogue, `Service ${sId}`),
                         description: transService(sId, 'description', catalogue, ''),
                         image: serImg ? `${baseImageUrl}${serImg}` : groupImage,
                         price: svc.serviceMontant > 0 ? Number(svc.serviceMontant) : null,
-                        persons: svc.serviceNbrPersonne || 0, prixUnit: svc.prixUnit, idtype: svc.idtype, priceType: svc.typePrix
+                        persons: svc.serviceNbrPersonne || 0, prixUnit: svc.prixUnit, idtype: svc.idtype, priceType: svc.typePrix,
+                        pdfs
                     }
                 })
                 return { id: groupId, name: groupName, image: groupImage, services }

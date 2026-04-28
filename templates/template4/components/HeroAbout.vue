@@ -32,7 +32,7 @@
         <p class="text-[#D4AF37] text-sm md:text-xl font-bold uppercase tracking-[0.2em] md:tracking-[0.4em] animate-fade-in">
           {{ info.name }}
         </p>
-        <h1 class="text-6xl md:text-9xl font-serif font-bold text-white mb-8 md:mb-12 animate-fade-in delay-200">
+        <h1 class="text-5xl md:text-5xl font-serif font-bold text-white mb-8 md:mb-12 animate-fade-in delay-200">
           About
         </h1>
         
@@ -114,13 +114,14 @@ const resetTimer = () => {
 }
 
 onMounted(async () => {
-  const { fetchGallery, fetchHotelInfo } = useHotel()
+  const { fetchGallery, fetchHotelInfo, fetchHotelData } = useHotel()
   const { loadCatalogue, trans, ETAB_ID } = useTranslations()
 
-  const [hotelInfo, catalogue, gallery] = await Promise.all([
+  const [hotelInfo, catalogue, gallery, hotelData] = await Promise.all([
     fetchHotelInfo(),
     loadCatalogue(locale.value),
     fetchGallery(),
+    fetchHotelData()
   ])
 
   info.value = hotelInfo
@@ -130,8 +131,9 @@ onMounted(async () => {
   
   heroPhotos.value = galleryPhotos.length ? galleryPhotos : [{url: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80', caption: 'Default'}]
 
-  // Fetch description
-  const rawDesc = trans('61402-description', {}, `${ETAB_ID}_Page`, catalogue, '')
+  // Fetch description dynamically from page pId
+  const pageId = hotelData?.page?.pId || '58752'
+  const rawDesc = trans(`${pageId}-description`, {}, `${ETAB_ID}_Page`, catalogue, '')
   const tmp = document.createElement('div')
   tmp.innerHTML = rawDesc
   pageDesc.value = tmp.innerHTML

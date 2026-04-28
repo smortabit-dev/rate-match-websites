@@ -139,7 +139,7 @@ const subtitleText = ref('dernierscommentaires')
 const activeFilter = ref('all')
 const panelOpen = ref(false)
 const panelComment = ref(null)
-const STATIC_KEYS = ['voirplus']
+const STATIC_KEYS = ['voirplus', 'all']
 const t = ref(Object.fromEntries(STATIC_KEYS.map(k => [k, k])))
 
 const maxIndex = computed(() => Math.max(0, testimonials.value.length - visibleCount.value))
@@ -180,11 +180,11 @@ const closeSlidePanel = () => {
   document.body.style.overflow = 'auto'
 }
 
-const filters = [
-  { label: 'All', value: 'all' },
+const filters = computed(() => [
+  { label: t.value.all, value: 'all' },
   { label: 'TripAdvisor', value: 'tripadvisor' },
   { label: 'Booking', value: 'booking' },
-]
+])
 
 const { locale } = useLocale()
 

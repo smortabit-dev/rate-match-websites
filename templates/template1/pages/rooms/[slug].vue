@@ -34,14 +34,14 @@
               <Icon name="mdi:ruler" class="text-amber-400" /> {{ room.size }} m²
             </span>
             <span class="flex items-center gap-1">
-              <Icon name="mdi:account-multiple" class="text-amber-400" /> {{ room.guests }} {{ t.guests }}
+              <Icon name="mdi:account-multiple" class="text-amber-400" /> {{ t.occupationmaximale }} {{ room.guests }} {{ t.personnes }}
             </span>
             <span class="flex items-center gap-1">
               <Icon name="mdi:bed" class="text-amber-400" /> {{ room.bedType }}
             </span>
-            <span class="flex items-center gap-1">
+            <!-- <span class="flex items-center gap-1">
               <Icon name="mdi:window-open" class="text-amber-400" /> {{ room.view }}
-            </span>
+            </span> -->
           </div>
         </div>
       </div>
@@ -82,7 +82,7 @@
           <div class="lg:col-span-2 space-y-10 sm:space-y-16">
             <!-- Description -->
             <div>
-              <p class="section-subtitle">{{ room.category }}</p>
+              <!-- <p class="section-subtitle">{{ room.category }}</p> -->
               <h2 class="section-title mb-6">{{ room.name }}</h2>
               <div class="w-12 h-px bg-amber-700 mb-6"></div>
               <div class="text-gray-600 leading-relaxed text-sm sm:text-base space-y-4" v-html="room.description"></div>
@@ -260,7 +260,7 @@
 
                 <!-- Guests -->
                 <div class="mb-6">
-                  <label class="block text-xs uppercase tracking-wider text-gray-500 mb-2">{{ t.guests }}</label>
+                  <label class="block text-xs uppercase tracking-wider text-gray-500 mb-2">{{ t.personnes }}</label>
                   <select v-model="bookingForm.guests"
                           class="w-full border-b-2 border-gray-200 focus:border-amber-700 focus:outline-none py-2 text-sm bg-transparent">
                     <option v-for="n in (room.guests || 4)" :key="n" :value="n">{{ n }}</option>
@@ -273,7 +273,7 @@
               </div>
               <!-- Quick Info -->
               <div class="border border-gray-200 p-5 sm:p-6">
-                <h3 class="text-xs uppercase tracking-[0.15em] font-semibold text-gray-800 mb-4">Quick Info</h3>
+                <h3 class="text-xs uppercase tracking-[0.15em] font-semibold text-gray-800 mb-4">{{ t.quickinfo }}</h3>
                 <div class="w-8 h-px bg-amber-700 mb-4"></div>
                 <ul class="space-y-3">
                   <li class="flex items-center gap-3 text-sm text-gray-600">
@@ -313,7 +313,7 @@
     <section class="py-12 sm:py-16 lg:py-24 bg-stone-50">
       <div class="container mx-auto px-4 sm:px-6">
         <div class="text-center mb-10 sm:mb-12">
-          <p class="section-subtitle">{{ t.gallery }}</p>
+          <p class="section-subtitle">{{ t.galerie }}</p>
           <h2 class="section-title">{{ room.name }}</h2>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4">
@@ -335,7 +335,7 @@
       <div class="container mx-auto px-4 sm:px-6">
         <div class="text-center mb-10 sm:mb-12">
           <p class="section-subtitle">{{ t.hebergements }}</p>
-          <h2 class="section-title">{{ t.autreschambers }}</h2>
+          <h2 class="section-title">{{ t.autreschambresetsuites }}</h2>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           <NuxtLink v-for="sr in similarRooms" :key="sr.id"
@@ -350,7 +350,7 @@
             </div>
             <div class="w-8 h-px bg-gray-800 mb-3"></div>
             <h3 class="text-lg sm:text-xl font-serif mb-1 group-hover:text-amber-700 transition-colors">{{ sr.name }}</h3>
-            <p class="text-gray-400 text-sm mb-2">{{ sr.size }}m² · {{ sr.guests }} {{ t.guests }}</p>
+            <p class="text-gray-400 text-sm mb-2">{{ sr.size }}m² · {{ sr.guests }} {{ t.personnes }}</p>
             <!-- <span class="text-lg font-serif text-amber-700">{{ sr.price }}€ <span class="text-xs text-gray-400 font-sans">/ {{ t.nuit }}</span></span> -->
           </NuxtLink>
         </div>
@@ -540,11 +540,11 @@ const dayBtnClass = (day) => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const STATIC_KEYS = [
-  'accueil', 'verifierladisponibilite', 'voirlesdetails', 'nuit', 'hebergements', 'gallery', 'contact', 'nosservices', 'checkin', 'checkout', 'nonfumeur', 'chambrefumeur', 'interdictiondefumer', 'petsallowed', 'backtotherooms',
+  'accueil', 'verifierladisponibilite', 'voirlesdetails', 'nuit', 'hebergements', 'autreschambresetsuites', 'occupationmaximale', 'quickinfo', 'galerie', 'contact', 'nosservices', 'checkin', 'checkout', 'nonfumeur', 'chambrefumeur', 'interdictiondefumer', 'petsallowed', 'backtotherooms',
 ]
 const t = ref({
   ...Object.fromEntries(STATIC_KEYS.map(k => [k, k])),
-  guests: 'Guests',
+  personnes: 'personnes',
   keyfeatures: 'Key Features',
   roomamenities: 'Room Amenities',
   equipements: 'Equipements',
@@ -554,7 +554,6 @@ const t = ref({
   smoking: 'Smoking',
   pets: 'Pets',
   from: 'From',
-  autreschambers: 'Other Rooms',
 })
 
 const amenityIcon = (feat) => {

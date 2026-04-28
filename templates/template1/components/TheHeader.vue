@@ -36,7 +36,7 @@
                   :class="menuOpen ? 'text-gray-900' : (scrolled ? 'text-gray-900' : 'text-white')">
             <Icon v-if="menuOpen" name="mdi:close" class="text-2xl" />
             <Icon v-else name="mdi:menu" class="text-2xl" />
-            <span v-if="menuOpen" class="text-xs uppercase tracking-[0.15em] font-semibold hidden sm:inline">Close</span>
+            <span v-if="menuOpen" class="text-xs uppercase tracking-[0.15em] font-semibold hidden sm:inline">{{ t.fermer }}</span>
           </button>
         </div>
       </div>
@@ -136,7 +136,7 @@ const currencies = ref([])
 const selectedCurrency = useCurrency()
 const currencySearch = ref('')
 
-const STATIC_KEYS = ['verifierladisponibilite', 'accueil', 'noschambres', 'customerscomments', 'nosservices', 'facilities', 'galerie', 'contact']
+const STATIC_KEYS = ['verifierladisponibilite', 'fermer', 'accueil', 'noschambres', 'customerscomments', 'nosservices', 'facilities', 'galerie', 'contact']
 const t = ref(Object.fromEntries(STATIC_KEYS.map(k => [k, k])))
 
 const dynamicPages = ref([])

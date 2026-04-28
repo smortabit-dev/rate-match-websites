@@ -1,7 +1,7 @@
 <template>
   <section class="py-16 sm:py-24 bg-stone-100">
     <div class="container mx-auto px-4 sm:px-6">
-      <h2 class="section-title text-amber-800 mb-12">{{ subtitleText }}</h2>
+      <h2 class="section-title text-amber-800 mb-12">{{ subtitleText ? subtitleText.charAt(0).toUpperCase() + subtitleText.slice(1).toLowerCase() : '' }}</h2>
 
       <div v-if="loading" class="text-center py-12">
         <div class="inline-block animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-amber-700"></div>

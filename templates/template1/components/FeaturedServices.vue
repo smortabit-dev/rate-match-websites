@@ -114,10 +114,19 @@
                     {{ t[cleanPriceType(service.priceType)] || cleanPriceType(service.priceType) }}
                   </span>
                 </div>
+                <!-- PDF Download -->
+                <div v-if="service.pdfs && service.pdfs.length > 0" class="mb-4">
+                  <b class="text-xs font-semibold text-gray-800 uppercase tracking-wide flex items-center gap-2">
+                    {{ t.telecharger || 'Download' }} 
+                    <a v-for="(pdf, pIdx) in service.pdfs" :key="'pdf-'+pIdx" :href="pdf.imageUrl" target="_blank" @click.stop class="text-amber-700 hover:text-amber-800 transition-colors">
+                      <Icon name="mdi:cloud-download-outline" class="text-xl" />
+                    </a>
+                  </b>
+                </div>
                 <!-- Learn more -->
                 <button @click.stop="openPanel(service)"
                         class="mt-auto inline-flex items-center gap-1 text-xs uppercase tracking-[0.15em] font-semibold text-amber-700 hover:text-amber-800 transition-colors">
-                  {{ t.learnmore }}
+                  {{ t.ensavoirplus }}
                   <Icon name="mdi:arrow-right" class="text-sm" />
                 </button>
               </div>
@@ -188,6 +197,16 @@
                 </span>
               </div>
 
+              <!-- PDF Download in Panel -->
+              <div v-if="panelService.pdfs && panelService.pdfs.length > 0" class="mb-5 pb-5 border-b border-gray-100">
+                <b class="text-xs font-semibold text-gray-800 uppercase tracking-wide flex items-center gap-2">
+                  {{ t.telecharger || 'Download' }} 
+                  <a v-for="(pdf, pIdx) in panelService.pdfs" :key="'panel-pdf-'+pIdx" :href="pdf.imageUrl" target="_blank" class="text-amber-700 hover:text-amber-800 transition-colors">
+                    <Icon name="mdi:cloud-download-outline" class="text-xl" />
+                  </a>
+                </b>
+              </div>
+
               <div class="text-gray-600 text-sm leading-relaxed" v-html="panelService.description"></div>
             </div>
           </div>
@@ -228,9 +247,9 @@ const updateVisibleCount = () => {
   else visibleCount.value = 3
 }
 
-const STATIC_KEYS = ['servicesdelhotel', 'decouvrezlesservices', 'learnmore', 'tous',
+const STATIC_KEYS = ['servicesdelhotel', 'decouvrezlesservices', 'ensavoirplus', 'tous',
   'ensupplement', 'apartirde', 'parunite', 'parsejour', 'nepasspecifier',
-  'pour$x1personne', 'pour$x1personnes']
+  'pour$x1personne', 'pour$x1personnes', 'telecharger']
 
 const cleanPriceType = (val = '') =>
   val.replace(/services|service|tarif/gi, '').trim() || val

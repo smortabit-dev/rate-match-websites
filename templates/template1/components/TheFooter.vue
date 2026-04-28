@@ -1,15 +1,13 @@
 <template>
   <footer class="bg-gray-900 text-white">
     <!-- Newsletter -->
-    <div class="bg-white border-b border-gray-200">
+    <!-- <div class="bg-white border-b border-gray-200">
       <div class="container mx-auto px-4 sm:px-6 py-10 sm:py-12 lg:py-16">
         <div class="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-8 lg:gap-16 items-start">
-          <!-- Left: Title + description -->
           <div>
             <h3 class="text-2xl sm:text-3xl font-serif text-gray-900 mb-3">{{ t.newsletter }}</h3>
             <p class="text-gray-500 text-sm leading-relaxed">Subscribe to our newsletter and never miss an exclusive insight!</p>
           </div>
-          <!-- Right: Form -->
           <form @submit.prevent="handleNewsletter" class="space-y-4">
             <div class="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-4 items-end">
               <div>
@@ -34,7 +32,7 @@
           </form>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- Main Footer -->
     <div class="container mx-auto px-4 sm:px-6 py-12 sm:py-16">

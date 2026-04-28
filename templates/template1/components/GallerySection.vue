@@ -73,7 +73,7 @@ const loading       = ref(true)
 const lightboxOpen  = ref(false)
 const lightboxIndex = ref(0)
 
-const titleText    = ref('gallery')
+const titleText    = ref('galerie')
 const subtitleText = ref('galeriedaccueil')
 
 const { locale } = useLocale()
@@ -139,7 +139,7 @@ onMounted(async () => {
     loadCatalogue(locale.value),
   ])
   galleryImages.value = images
-  titleText.value     = transStatic('gallery',         catalogue)
+  titleText.value     = transStatic('galerie',         catalogue)
   subtitleText.value  = transStatic('galeriedaccueil', catalogue)
   loading.value = false
 
