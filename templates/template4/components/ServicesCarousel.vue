@@ -17,9 +17,10 @@
           <div class="flex gap-4 transition-transform duration-500 ease-out">
             <!-- All Services -->
             <div @click="selectedCategoryId = null"
-                 class="flex-shrink-0 w-44 lg:w-[calc(20%-0.8rem)] h-20 relative cursor-pointer group overflow-hidden shadow-sm"
+                 class="flex-shrink-0 h-32 relative cursor-pointer group overflow-hidden shadow-sm transition-all duration-300"
+                 :style="{ width: `calc(${100 / catVisibleCount}% - ${((catVisibleCount - 1) * 16) / catVisibleCount}px)` }"
                  :class="selectedCategoryId === null ? 'ring-2 ring-[#D4AF37]' : ''">
-              <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400" class="absolute inset-0 w-full h-full object-cover grayscale brightness-50 group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" />
+              <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400" class="absolute inset-0 w-full h-full object-cover brightness-50 group-hover:brightness-100 group-hover:scale-110 transition-all duration-700" />
               <div v-if="selectedCategoryId === null" class="absolute left-0 top-0 bottom-0 w-6 bg-[#D4AF37] flex items-center justify-center">
                  <Icon name="mdi:arrow-down" class="text-white text-xs" />
               </div>
@@ -31,9 +32,10 @@
             <!-- Dynamic Categories -->
             <div v-for="cat in categories" :key="cat.id" 
                  @click="selectedCategoryId = cat.id"
-                 class="flex-shrink-0 w-44 lg:w-[calc(20%-0.8rem)] h-20 relative cursor-pointer group overflow-hidden shadow-sm"
+                 class="flex-shrink-0 h-32 relative cursor-pointer group overflow-hidden shadow-sm transition-all duration-300"
+                 :style="{ width: `calc(${100 / catVisibleCount}% - ${((catVisibleCount - 1) * 16) / catVisibleCount}px)` }"
                  :class="selectedCategoryId === cat.id ? 'ring-2 ring-[#D4AF37]' : ''">
-              <img :src="cat.image || 'https://images.unsplash.com/photo-1544161515-4ae6ce6ea858?w=400'" class="absolute inset-0 w-full h-full object-cover grayscale brightness-50 group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" />
+              <img :src="cat.image || 'https://images.unsplash.com/photo-1544161515-4ae6ce6ea858?w=400'" class="absolute inset-0 w-full h-full object-cover brightness-50 group-hover:brightness-100 group-hover:scale-110 transition-all duration-700" />
               <div v-if="selectedCategoryId === cat.id" class="absolute left-0 top-0 bottom-0 w-6 bg-[#D4AF37] flex items-center justify-center">
                  <Icon name="mdi:arrow-down" class="text-white text-xs" />
               </div>
@@ -193,7 +195,8 @@ const categories = ref([])
 const allServices = ref([])
 const selectedCategoryId = ref(null)
 const currentIndex = ref(0)
-const visibleCount = ref(3)
+const visibleCount = ref(2.5)
+const catVisibleCount = ref(3)
 const categoriesScroll = ref(null)
 
 // Popup State
@@ -202,9 +205,15 @@ const selectedService = computed(() => selectedIdx.value !== null ? filteredServ
 
 const updateVisibleCount = () => {
   const w = window.innerWidth
-  if (w < 768) visibleCount.value = 1.1
-  else if (w < 1280) visibleCount.value = 2.1
-  else visibleCount.value = 3.1
+  // Bottom services
+  if (w < 768) visibleCount.value = 1
+  else if (w < 1280) visibleCount.value = 2
+  else visibleCount.value = 2.5
+
+  // Top categories
+  if (w < 640) catVisibleCount.value = 1
+  else if (w < 1024) catVisibleCount.value = 2
+  else catVisibleCount.value = 3
 }
 
 const filteredServices = computed(() => {

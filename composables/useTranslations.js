@@ -267,12 +267,26 @@ export const useTranslations = () => {
     trans(`${id}-${field}`, {}, `${ETAB_ID}_Faq`, catalogue, fallback)
 
   /**
+   * GoodToKnowType translation
+   * Twig: {{ (id ~ '-titer') | trans({}, idetab ~ '_GoodToKnowType') }}
+   */
+  const transGoodToKnowType = (id, field, catalogue, fallback = '') =>
+    trans(`${id}-${field}`, {}, `${ETAB_ID}_GoodToKnowType`, catalogue, fallback)
+
+  /**
+   * ToKnow translation
+   * Twig: {{ (id ~ '-description') | trans({}, idetab ~ '_ToKnow') }}
+   */
+  const transToKnow = (id, field, catalogue, fallback = '') =>
+    trans(`${id}-${field}`, {}, `${ETAB_ID}_ToKnow`, catalogue, fallback)
+
+  /**
    * Static UI label translation
    * Twig: {{ 'gallery' | trans({}, idetab) }}
    * Domain in API: "static" → normalised to "12791_static"
    */
-  const transStatic = (key, catalogue, fallback = '') =>
-    trans(key, {}, `${ETAB_ID}_static`, catalogue, fallback || key)
+  const transStatic = (key, catalogue, fallback = '', params = {}) =>
+    trans(key, params, `${ETAB_ID}_static`, catalogue, fallback || key)
 
   // ─────────────────────────────────────────────────────────────────────
   // 5. High-level helpers
@@ -390,6 +404,8 @@ export const useTranslations = () => {
     transFaq,
     transStatic,
     transPage,
+    transGoodToKnowType,
+    transToKnow,
     getChamberTranslations,
     getEtabTranslations,
     transLandmarkType,

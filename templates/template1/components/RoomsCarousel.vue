@@ -1,7 +1,7 @@
 <template>
   <section class="py-24 bg-white">
     <div class="container mx-auto px-6">
-      <div class="text-center mb-16">
+      <div class="text-left mb-16">
         <p class="section-subtitle">{{ t.discover }}</p>
         <h2 class="section-title">{{ t.chambressuites }}</h2>
       </div>
@@ -62,10 +62,10 @@
                     {{ t.voirlesdetails }}
                     <Icon name="mdi:arrow-right" class="text-sm" />
                   </NuxtLink>
-                  <NuxtLink :to="localePath('/availibility')"
+                  <!-- <NuxtLink :to="localePath('/availibility')"
                             class="px-4 sm:px-5 py-2 border border-amber-700 text-[10px] sm:text-xs uppercase tracking-[0.15em] font-semibold text-amber-700 hover:bg-amber-700 hover:text-white transition-all">
                     {{ t.verifierladisponibilite }}
-                  </NuxtLink>
+                  </NuxtLink> -->
                 </div>
               </div>
             </div>

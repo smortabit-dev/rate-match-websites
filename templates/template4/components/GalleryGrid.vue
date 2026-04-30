@@ -97,9 +97,9 @@ const lightboxIdx = ref(null)
 
 const updateVisibleCount = () => {
   const w = window.innerWidth
-  if (w < 768) visibleCount.value = 1.2
-  else if (w < 1280) visibleCount.value = 2.2
-  else visibleCount.value = 3.2
+  if (w < 768) visibleCount.value = 1
+  else if (w < 1280) visibleCount.value = 2
+  else visibleCount.value = 3
 }
 
 const prev = () => { currentIndex.value = currentIndex.value > 0 ? currentIndex.value - 1 : photos.value.length - 1 }

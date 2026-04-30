@@ -1,4 +1,11 @@
-const DEFAULT_LOCALE = 'en'
+// Detect browser language (e.g. 'fr-FR' → 'fr'), fallback to 'en'
+const getBrowserLocale = () => {
+  if (typeof navigator === 'undefined') return 'en'
+  const lang = (navigator.language || navigator.userLanguage || 'en').slice(0, 2).toLowerCase()
+  return /^[a-z]{2}$/.test(lang) ? lang : 'en'
+}
+
+const DEFAULT_LOCALE = getBrowserLocale()
 
 // Accept any valid 2-letter language code (dynamic from API)
 const isLangCode = (s) => typeof s === 'string' && /^[a-z]{2}$/.test(s)
@@ -32,8 +39,8 @@ export const useLocale = () => {
     return `/${newLocale}${route.fullPath}`
   }
 
-  // Direction for RTL support (Arabic)
-  const dir = computed(() => locale.value === 'ar' ? 'rtl' : 'ltr')
+  // Direction for RTL support (Arabic, Hebrew)
+  const dir = computed(() => ['ar', 'he'].includes(locale.value) ? 'rtl' : 'ltr')
 
   return {
     locale,

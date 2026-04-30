@@ -16,7 +16,7 @@
                  class="cursor-pointer flex items-center justify-between border-b-2 pb-2 transition-colors"
                  :class="calFocus === 'checkin' ? 'border-teal-500' : 'border-gray-200 hover:border-gray-400'">
               <span class="text-sm" :class="startDate ? 'text-gray-800 font-medium' : 'text-gray-400'">
-                {{ startDate ? calDisplayDate(startDate) : 'Add date' }}
+                {{ startDate ? calDisplayDate(startDate) : calUI.addDate }}
               </span>
               <Icon name="mdi:calendar-outline" class="text-gray-400 text-sm" />
             </div>
@@ -52,7 +52,7 @@
                 <!-- Month 1 -->
                 <div>
                   <div class="grid grid-cols-7 mb-1">
-                    <div v-for="d in CAL_DAYS" :key="d" class="text-center text-[10px] text-gray-400 py-1">{{ d }}</div>
+                    <div v-for="d in calDayNames" :key="d" class="text-center text-[10px] text-gray-400 py-1">{{ d }}</div>
                   </div>
                   <div class="grid grid-cols-7">
                     <template v-for="(day, i) in getDaysInMonth(cal1Year, cal1Month)" :key="'m1-'+i">
@@ -74,7 +74,7 @@
                 <!-- Month 2 -->
                 <div>
                   <div class="grid grid-cols-7 mb-1">
-                    <div v-for="d in CAL_DAYS" :key="d" class="text-center text-[10px] text-gray-400 py-1">{{ d }}</div>
+                    <div v-for="d in calDayNames" :key="d" class="text-center text-[10px] text-gray-400 py-1">{{ d }}</div>
                   </div>
                   <div class="grid grid-cols-7">
                     <template v-for="(day, i) in getDaysInMonth(cal2Year, cal2Month)" :key="'m2-'+i">
@@ -98,12 +98,12 @@
               <!-- Night count + Done -->
               <div class="flex items-center justify-between mt-4 border-t border-gray-100 pt-4">
                 <span v-if="nightCount > 0" class="text-sm font-semibold text-gray-700">
-                  {{ nightCount }} Night(s)
+                  {{ nightCount }} {{ calUI.nights }}
                 </span>
-                <span v-else class="text-xs text-gray-400">Select dates</span>
+                <span v-else class="text-xs text-gray-400">{{ calUI.selectDates }}</span>
                 <button @click.stop="calendarOpen = false; calFocus = null"
                         class="flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-white text-xs font-semibold px-4 py-2.5 transition-colors">
-                  Done <Icon name="mdi:arrow-right" class="text-sm" />
+                  {{ calUI.done }} <Icon name="mdi:arrow-right" class="text-sm" />
                 </button>
               </div>
             </div>
@@ -116,7 +116,7 @@
                  class="cursor-pointer flex items-center justify-between border-b-2 pb-2 transition-colors"
                  :class="calFocus === 'checkout' ? 'border-teal-500' : 'border-gray-200 hover:border-gray-400'">
               <span class="text-sm" :class="endDate ? 'text-gray-800 font-medium' : 'text-gray-400'">
-                {{ endDate ? calDisplayDate(endDate) : 'Add date' }}
+                {{ endDate ? calDisplayDate(endDate) : calUI.addDate }}
               </span>
               <Icon name="mdi:calendar-outline" class="text-gray-400 text-sm" />
             </div>
@@ -168,8 +168,28 @@ const { loadCatalogue, transStatic } = useTranslations()
 const { ETAB_ID } = useHotel()
 
 // ── Calendar ──────────────────────────────────────────────────────────────────
-const CAL_DAYS   = ['Mo','Tu','We','Th','Fr','Sa','Su']
-const CAL_MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
+// Locale-aware day names (Monday-first) — 2024-01-01 was a Monday
+const calDayNames = computed(() =>
+  Array.from({ length: 7 }, (_, i) =>
+    new Intl.DateTimeFormat(locale.value, { weekday: 'short' }).format(new Date(2024, 0, 1 + i)).slice(0, 2)
+  )
+)
+
+// UI strings per locale
+const _CAL_UI = {
+  fr: { addDate: 'Ajouter une date', nights: 'Nuit(s)', selectDates: 'Sélectionner les dates', done: 'Terminé' },
+  ar: { addDate: 'أضف تاريخاً', nights: 'ليلة/ليالٍ', selectDates: 'اختر التواريخ', done: 'تم' },
+  es: { addDate: 'Añadir fecha', nights: 'Noche(s)', selectDates: 'Seleccionar fechas', done: 'Listo' },
+  de: { addDate: 'Datum hinzufügen', nights: 'Nacht/-nächte', selectDates: 'Datum wählen', done: 'Fertig' },
+  it: { addDate: 'Aggiungi data', nights: 'Notte(i)', selectDates: 'Scegli le date', done: 'Fatto' },
+  pt: { addDate: 'Adicionar data', nights: 'Noite(s)', selectDates: 'Selecionar datas', done: 'Concluído' },
+  nl: { addDate: 'Datum toevoegen', nights: 'Nacht(en)', selectDates: 'Datum selecteren', done: 'Klaar' },
+  he: { addDate: 'הוסף תאריך', nights: 'לילה/ות', selectDates: 'בחר תאריכים', done: 'סיום' },
+  ru: { addDate: 'Добавить дату', nights: 'Ночь(и)', selectDates: 'Выбрать даты', done: 'Готово' },
+  zh: { addDate: '添加日期', nights: '晚', selectDates: '选择日期', done: '完成' },
+  ja: { addDate: '日付を追加', nights: '泊', selectDates: '日付を選択', done: '完了' },
+}
+const calUI = computed(() => _CAL_UI[locale.value] || { addDate: 'Add date', nights: 'Night(s)', selectDates: 'Select dates', done: 'Done' })
 
 const _today   = new Date()
 const cal1Base = ref(new Date(_today.getFullYear(), _today.getMonth(), 1))
@@ -179,7 +199,7 @@ const cal1Month = computed(() => cal1Base.value.getMonth())
 const cal2Year  = computed(() => { const d = new Date(cal1Base.value); d.setMonth(d.getMonth() + 1); return d.getFullYear() })
 const cal2Month = computed(() => { const d = new Date(cal1Base.value); d.setMonth(d.getMonth() + 1); return d.getMonth() })
 
-const calMonthName = (m) => CAL_MONTHS[m]
+const calMonthName = (m) => new Intl.DateTimeFormat(locale.value, { month: 'long' }).format(new Date(2024, m, 1))
 
 const prevMonth = () => {
   const d = new Date(cal1Base.value); d.setMonth(d.getMonth() - 1)
@@ -203,7 +223,11 @@ const calPanelRef  = ref(null)
 const calParseDate  = (str) => str ? new Date(str + 'T00:00:00') : null
 const calFormatDate = (d)   => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
 const calSameDay    = (a, b) => a && b && a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate()
-const calDisplayDate = (str) => { if (!str) return ''; const d = calParseDate(str); return `${CAL_MONTHS[d.getMonth()].slice(0,3)} ${d.getDate()}, ${d.getFullYear()}` }
+const calDisplayDate = (str) => {
+  if (!str) return ''
+  const d = calParseDate(str)
+  return new Intl.DateTimeFormat(locale.value, { day: 'numeric', month: 'short', year: 'numeric' }).format(d)
+}
 
 const calIsPast  = (day) => day < new Date(_today.getFullYear(), _today.getMonth(), _today.getDate())
 const calIsStart = (day) => calSameDay(day, calParseDate(startDate.value))

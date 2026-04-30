@@ -1,9 +1,9 @@
 <template>
-  <div class="min-h-screen bg-stone-50 pt-14">
+  <div class="template4-root min-h-screen bg-slate-50 pt-20">
     <!-- Return Bar -->
-    <div class="bg-stone-800 w-full sticky top-0 z-20">
-      <div class="container mx-auto px-4 sm:px-6 py-4">
-        <NuxtLink :to="localePath('/') + '#footer'" class="inline-flex items-center text-white text-[11px] font-bold uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">
+    <div class="bg-[#002B5B] w-full sticky top-0 z-20">
+      <div class="container mx-auto px-6 py-4">
+        <NuxtLink :to="localePath('/') + '#footer'" class="inline-flex items-center text-white text-[11px] font-bold uppercase tracking-[0.2em] hover:text-blue-400 transition-colors">
           <Icon name="mdi:arrow-left" class="mr-3 text-lg" />
           {{ t.retour }}
         </NuxtLink>
@@ -11,16 +11,16 @@
     </div>
 
     <!-- Content -->
-    <div class="container mx-auto px-4 sm:px-6 py-12 sm:py-20 max-w-4xl">
+    <div class="container mx-auto px-6 py-12 sm:py-20 max-w-4xl">
       <div class="text-center mb-16">
-        <h1 class="section-title text-gray-900">{{ t.politiquedeconfidentialite }}</h1>
+        <h1 class="section-title text-[#002B5B]">{{ t.politiquedeconfidentialite }}</h1>
       </div>
       
       <div v-if="t.confidentialite" 
-           class="prose prose-stone max-w-none text-sm text-stone-600 leading-relaxed bg-white border border-stone-200 p-8 sm:p-12 shadow-sm"
+           class="prose prose-slate max-w-none text-sm text-slate-600 leading-relaxed bg-white border border-slate-200 rounded-2xl p-8 sm:p-12 shadow-sm"
            v-html="t.confidentialite"></div>
            
-      <p class="text-xs text-stone-400 pt-12 text-center">Last updated: {{ new Date().getFullYear() }}</p>
+      <p class="text-xs text-slate-400 pt-12 text-center font-medium">Last updated: {{ new Date().getFullYear() }}</p>
     </div>
   </div>
 </template>
@@ -66,7 +66,13 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.template4-root {
+  font-family: 'Outfit', sans-serif;
+}
+.font-serif {
+  font-family: 'Playfair Display', serif;
+}
 .section-title {
-  @apply font-serif text-3xl sm:text-4xl text-gray-900 mb-6;
+  @apply font-serif text-3xl sm:text-4xl font-bold mb-6;
 }
 </style>

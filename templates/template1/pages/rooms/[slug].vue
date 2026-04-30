@@ -37,7 +37,7 @@
               <Icon name="mdi:account-multiple" class="text-amber-400" /> {{ t.occupationmaximale }} {{ room.guests }} {{ t.personnes }}
             </span>
             <span class="flex items-center gap-1">
-              <Icon name="mdi:bed" class="text-amber-400" /> {{ room.bedType }}
+              <Icon name="mdi:bed" class="text-amber-400" /> {{ bedLabel || room.bedType }}
             </span>
             <!-- <span class="flex items-center gap-1">
               <Icon name="mdi:window-open" class="text-amber-400" /> {{ room.view }}
@@ -90,12 +90,12 @@
             <!-- Amenities -->
             <div v-if="room.features && room.features.length">
               <p class="section-subtitle">{{ t.nosservices }}</p>
-              <h2 class="section-title mb-6">{{ t.roomamenities }}</h2>
+              <h2 class="section-title mb-6">{{ t.equipementsenchambre }}</h2>
               <div class="w-12 h-px bg-amber-700 mb-8"></div>
               <div class="grid grid-cols-2 lg:grid-cols-4">
                 <div v-for="(feat, i) in room.features" :key="feat"
                      class="flex items-center justify-between px-4 py-3 border-b border-r border-gray-100">
-                  <span class="text-sm" :class="i % 3 === 1 ? 'text-gray-600' : 'text-gray-600'">{{ feat }}</span>
+                  <span class="text-sm" :class="i % 3 === 1 ? 'text-gray-600' : 'text-gray-600'">{{ feat ? feat.charAt(0).toUpperCase() + feat.slice(1) : '' }}</span>
                   <Icon :name="amenityIcon(feat)" class="text-lg flex-shrink-0 ml-3"
                         :class="i % 3 === 1 ? 'text-gray-400' : 'text-gray-400'" />
                 </div>
@@ -115,7 +115,7 @@
                 </div>
                 <div>
                   <Icon name="mdi:smoking-off" class="text-2xl text-amber-700 mb-2" />
-                  <h3 class="text-xs uppercase tracking-[0.15em] font-semibold text-gray-800 mb-2">{{ t.smoking }}</h3>
+                  <h3 class="text-xs uppercase tracking-[0.15em] font-semibold text-gray-800 mb-2">{{ t.fumeur }}</h3>
                   <p class="text-sm text-gray-600">{{ smokingLabel }}</p>
                 </div>
               </div>
@@ -136,7 +136,7 @@
                        class="cursor-pointer flex items-center justify-between border-b-2 pb-2 transition-colors"
                        :class="calFocus === 'checkin' ? 'border-teal-500' : 'border-gray-200 hover:border-gray-400'">
                     <span class="text-sm" :class="bookingForm.checkIn ? 'text-gray-800 font-medium' : 'text-gray-400'">
-                      {{ bookingForm.checkIn ? calDisplayDate(bookingForm.checkIn) : 'Add date' }}
+                      {{ bookingForm.checkIn ? calDisplayDate(bookingForm.checkIn) : calUI.addDate }}
                     </span>
                     <Icon name="mdi:calendar-outline" class="text-gray-400 text-sm" />
                   </div>
@@ -172,7 +172,7 @@
                       <!-- Month 1 -->
                       <div>
                         <div class="grid grid-cols-7 mb-1">
-                          <div v-for="d in CAL_DAYS" :key="d" class="text-center text-[10px] text-gray-400 py-1">{{ d }}</div>
+                          <div v-for="d in calDayNames" :key="d" class="text-center text-[10px] text-gray-400 py-1">{{ d }}</div>
                         </div>
                         <div class="grid grid-cols-7">
                           <template v-for="(day, i) in getDaysInMonth(cal1Year, cal1Month)" :key="'m1-'+i">
@@ -194,7 +194,7 @@
                       <!-- Month 2 -->
                       <div>
                         <div class="grid grid-cols-7 mb-1">
-                          <div v-for="d in CAL_DAYS" :key="d" class="text-center text-[10px] text-gray-400 py-1">{{ d }}</div>
+                          <div v-for="d in calDayNames" :key="d" class="text-center text-[10px] text-gray-400 py-1">{{ d }}</div>
                         </div>
                         <div class="grid grid-cols-7">
                           <template v-for="(day, i) in getDaysInMonth(cal2Year, cal2Month)" :key="'m2-'+i">
@@ -218,7 +218,7 @@
                     <!-- Adults / Children / Rooms -->
                     <div class="border-t border-gray-200 mt-4 pt-4 grid grid-cols-3 gap-3">
                       <div v-for="(item, key) in calCounters" :key="key" class="flex flex-col">
-                        <span class="text-xs text-gray-500 mb-1.5">{{ item.label }}</span>
+                        <span class="text-xs text-gray-500 mb-1.5">{{ key === 'adults' ? calUI.adults : calUI.children }}</span>
                         <div class="flex items-center justify-between border-b border-gray-200 pb-1.5">
                           <span class="text-sm font-semibold text-gray-800">{{ item.value }}</span>
                           <div class="flex flex-col gap-0.5">
@@ -234,12 +234,12 @@
                     <!-- Night count + Done -->
                     <div class="flex items-center justify-between mt-4">
                       <span v-if="calNightCount > 0" class="text-sm font-semibold text-gray-700">
-                        {{ calNightCount }} Night(s)
+                        {{ calNightCount }} {{ calUI.nights }}
                       </span>
-                      <span v-else class="text-xs text-gray-400">Select dates</span>
+                      <span v-else class="text-xs text-gray-400">{{ calUI.selectDates }}</span>
                       <button @click.stop="calendarOpen = false; calFocus = null"
                               class="flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-white text-xs font-semibold px-4 py-2.5 transition-colors">
-                        Done <Icon name="mdi:arrow-right" class="text-sm" />
+                        {{ calUI.done }} <Icon name="mdi:arrow-right" class="text-sm" />
                       </button>
                     </div>
                   </div>
@@ -252,7 +252,7 @@
                        class="cursor-pointer flex items-center justify-between border-b-2 pb-2 transition-colors"
                        :class="calFocus === 'checkout' ? 'border-teal-500' : 'border-gray-200 hover:border-gray-400'">
                     <span class="text-sm" :class="bookingForm.checkOut ? 'text-gray-800 font-medium' : 'text-gray-400'">
-                      {{ bookingForm.checkOut ? calDisplayDate(bookingForm.checkOut) : 'Add date' }}
+                      {{ bookingForm.checkOut ? calDisplayDate(bookingForm.checkOut) : calUI.addDate }}
                     </span>
                     <Icon name="mdi:calendar-outline" class="text-gray-400 text-sm" />
                   </div>
@@ -283,7 +283,7 @@
                     <Icon name="mdi:account-multiple" class="text-lg text-amber-700" /> {{ room.guests }} {{ t.guests }}
                   </li>
                   <li class="flex items-center gap-3 text-sm text-gray-600">
-                    <Icon name="mdi:bed" class="text-lg text-amber-700" /> {{ room.bedType }}
+                    <Icon name="mdi:bed" class="text-lg text-amber-700" /> {{ bedLabel || room.bedType }}
                   </li>
                   <!-- <li class="flex items-center gap-3 text-sm text-gray-600">
                     <Icon name="mdi:window-open" class="text-lg text-amber-700" /> {{ room.view }}
@@ -403,9 +403,65 @@ const hotelCheckIn = computed(() => etablissement.value?.pCheckIn || '15:00')
 const hotelCheckOut = computed(() => etablissement.value?.pCheckOut || '12:00')
 const smokingLabel = computed(() => room.value?.isFumeur ? t.value.chambrefumeur : t.value.interdictiondefumer)
 
+// ── Bed configuration (mirrors Twig: lit[maxoccup] with "et" / "ou" connectors) ──
+const catalogue = ref({})
+
+const _BED_CONJ = {
+  fr: { and: 'et', or: 'ou' },
+  ar: { and: 'و', or: 'أو' },
+  es: { and: 'y', or: 'o' },
+  de: { and: 'und', or: 'oder' },
+  it: { and: 'e', or: 'o' },
+  pt: { and: 'e', or: 'ou' },
+  nl: { and: 'en', or: 'of' },
+  he: { and: 'ו', or: 'או' },
+  ru: { and: 'и', or: 'или' },
+  zh: { and: '和', or: '或' },
+  ja: { and: 'と', or: 'または' },
+}
+
+const bedLabel = computed(() => {
+  if (!room.value) return ''
+  const lit      = room.value.lit
+  const maxoccup = room.value.maxoccup
+  if (!lit || !maxoccup || !lit[maxoccup]) return room.value.bedType || ''
+  const options = Array.isArray(lit[maxoccup]) ? lit[maxoccup] : Object.values(lit[maxoccup])
+  if (!options.length) return room.value.bedType || ''
+  const { transStatic } = useTranslations()
+  const conj = _BED_CONJ[locale.value] || { and: 'and', or: 'or' }
+  const parts = options.map(option => {
+    const beds = Array.isArray(option.value) ? option.value : []
+    return beds.map(bed => {
+      const name = transStatic(bed.id, catalogue.value, '') || bed.id
+      return `${bed.nbr} ${name}`
+    }).join(` ${conj.and} `)
+  }).filter(Boolean)
+  return parts.join(` ${conj.or} `)
+})
+
 // ── Calendar ─────────────────────────────────────────────────────────────────
-const CAL_DAYS   = ['Mo','Tu','We','Th','Fr','Sa','Su']
-const CAL_MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
+// Locale-aware day names (Monday-first) — 2024-01-01 was a Monday
+const calDayNames = computed(() =>
+  Array.from({ length: 7 }, (_, i) =>
+    new Intl.DateTimeFormat(locale.value, { weekday: 'short' }).format(new Date(2024, 0, 1 + i)).slice(0, 2)
+  )
+)
+
+// UI strings per locale
+const _CAL_UI = {
+  fr: { addDate: 'Ajouter une date', nights: 'Nuit(s)', selectDates: 'Sélectionner les dates', done: 'Terminé', adults: 'Adulte(s)', children: 'Enfant(s)' },
+  ar: { addDate: 'أضف تاريخاً', nights: 'ليلة/ليالٍ', selectDates: 'اختر التواريخ', done: 'تم', adults: 'بالغ/ون', children: 'طفل/أطفال' },
+  es: { addDate: 'Añadir fecha', nights: 'Noche(s)', selectDates: 'Seleccionar fechas', done: 'Listo', adults: 'Adulto(s)', children: 'Niño(s)' },
+  de: { addDate: 'Datum hinzufügen', nights: 'Nacht/-nächte', selectDates: 'Datum wählen', done: 'Fertig', adults: 'Erwachsene', children: 'Kinder' },
+  it: { addDate: 'Aggiungi data', nights: 'Notte(i)', selectDates: 'Scegli le date', done: 'Fatto', adults: 'Adulto/i', children: 'Bambino/i' },
+  pt: { addDate: 'Adicionar data', nights: 'Noite(s)', selectDates: 'Selecionar datas', done: 'Concluído', adults: 'Adulto(s)', children: 'Criança(s)' },
+  nl: { addDate: 'Datum toevoegen', nights: 'Nacht(en)', selectDates: 'Datum selecteren', done: 'Klaar', adults: 'Volwassene(n)', children: 'Kind(eren)' },
+  he: { addDate: 'הוסף תאריך', nights: 'לילה/ות', selectDates: 'בחר תאריכים', done: 'סיום', adults: 'מבוגר/ים', children: 'ילד/ים' },
+  ru: { addDate: 'Добавить дату', nights: 'Ночь(и)', selectDates: 'Выбрать даты', done: 'Готово', adults: 'Взрослых', children: 'Детей' },
+  zh: { addDate: '添加日期', nights: '晚', selectDates: '选择日期', done: '完成', adults: '成人', children: '儿童' },
+  ja: { addDate: '日付を追加', nights: '泊', selectDates: '日付を選択', done: '完了', adults: '大人', children: '子供' },
+}
+const calUI = computed(() => _CAL_UI[locale.value] || { addDate: 'Add date', nights: 'Night(s)', selectDates: 'Select dates', done: 'Done', adults: 'Adult(s)', children: 'Children' })
 
 const _today   = new Date()
 const cal1Base = ref(new Date(_today.getFullYear(), _today.getMonth(), 1))
@@ -419,7 +475,7 @@ const cal2Month = computed(() => {
   const d = new Date(cal1Base.value); d.setMonth(d.getMonth() + 1); return d.getMonth()
 })
 
-const calMonthName = (m) => CAL_MONTHS[m]
+const calMonthName = (m) => new Intl.DateTimeFormat(locale.value, { month: 'long' }).format(new Date(2024, m, 1))
 
 const prevMonth = () => {
   const d = new Date(cal1Base.value)
@@ -460,7 +516,7 @@ const calSameDay = (a, b) =>
 const calDisplayDate = (str) => {
   if (!str) return ''
   const d = calParseDate(str)
-  return `${CAL_MONTHS[d.getMonth()].slice(0,3)} ${d.getDate()}, ${d.getFullYear()}`
+  return new Intl.DateTimeFormat(locale.value, { day: 'numeric', month: 'short', year: 'numeric' }).format(d)
 }
 
 const openCalendar = (field) => {
@@ -540,18 +596,15 @@ const dayBtnClass = (day) => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const STATIC_KEYS = [
-  'accueil', 'verifierladisponibilite', 'voirlesdetails', 'nuit', 'hebergements', 'autreschambresetsuites', 'occupationmaximale', 'quickinfo', 'galerie', 'contact', 'nosservices', 'checkin', 'checkout', 'nonfumeur', 'chambrefumeur', 'interdictiondefumer', 'petsallowed', 'backtotherooms',
+  'accueil', 'verifierladisponibilite', 'voirlesdetails', 'nuit', 'equipementsenchambre', 'policies', 'fumeur', 'hebergements', 'autreschambresetsuites', 'occupationmaximale', 'quickinfo', 'galerie', 'contact', 'nosservices', 'checkin', 'checkout', 'nonfumeur', 'chambrefumeur', 'interdictiondefumer', 'petsallowed', 'backtotherooms',
 ]
 const t = ref({
   ...Object.fromEntries(STATIC_KEYS.map(k => [k, k])),
   personnes: 'personnes',
   keyfeatures: 'Key Features',
-  roomamenities: 'Room Amenities',
   equipements: 'Equipements',
   informations: 'Informations',
-  policies: 'Policies',
   cancellation: 'Cancellation',
-  smoking: 'Smoking',
   pets: 'Pets',
   from: 'From',
 })
@@ -623,7 +676,7 @@ onMounted(async () => {
   
   const { loadCatalogue, transStatic } = useTranslations()
 
-  const [allRooms, data, info, catalogue] = await Promise.all([
+  const [allRooms, data, info, loadedCatalogue] = await Promise.all([
     fetchRooms(locale.value),
     fetchHotelData(),
     fetchHotelInfo(),
@@ -632,10 +685,11 @@ onMounted(async () => {
 
   hotelData.value = data
   hotelInfo.value = info
+  catalogue.value = loadedCatalogue
 
   // Translate static keys
   const translated = { ...t.value }
-  for (const key of STATIC_KEYS) translated[key] = transStatic(key, catalogue)
+  for (const key of STATIC_KEYS) translated[key] = transStatic(key, loadedCatalogue)
   t.value = translated
 
   // Find room by id
@@ -643,7 +697,7 @@ onMounted(async () => {
   const found = allRooms.find(r => String(r.id) === String(slug))
   if (found) {
     room.value = found
-    similarRooms.value = allRooms.filter(r => r.id !== found.id).slice(0, 3)
+    similarRooms.value = allRooms.filter(r => r.id !== found.id && !r.isBookingBasic).slice(0, 3)
   }
 
   loading.value = false

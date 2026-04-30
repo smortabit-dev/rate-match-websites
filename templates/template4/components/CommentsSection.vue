@@ -201,9 +201,9 @@ const activePopupIndex = computed(() => {
 
 const updateVisibleCount = () => {
   const w = window.innerWidth
-  if (w < 768) visibleCount.value = 1.2
-  else if (w < 1280) visibleCount.value = 2.2
-  else visibleCount.value = 3.2
+  if (w < 768) visibleCount.value = 1
+  else if (w < 1280) visibleCount.value = 2
+  else visibleCount.value = 2.5
 }
 
 const prev = () => { 

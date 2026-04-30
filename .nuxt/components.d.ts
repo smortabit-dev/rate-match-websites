@@ -15,6 +15,7 @@ type LazyComponent<T> = DefineComponent<HydrationStrategies, {}, {}, {}, {}, {},
 
 
 export const AmenitiesSection: typeof import("../templates/template1/components/AmenitiesSection.vue")['default']
+export const ContactSection: typeof import("../templates/template1/components/ContactSection.vue")['default']
 export const FeaturedServices: typeof import("../templates/template1/components/FeaturedServices.vue")['default']
 export const GallerySection: typeof import("../templates/template1/components/GallerySection.vue")['default']
 export const HeroCarousel: typeof import("../templates/template1/components/HeroCarousel.vue")['default']
@@ -26,7 +27,6 @@ export const TestimonialsSection: typeof import("../templates/template1/componen
 export const TheFooter: typeof import("../templates/template1/components/TheFooter.vue")['default']
 export const TheHeader: typeof import("../templates/template1/components/TheHeader.vue")['default']
 export const AboutSection: typeof import("../templates/template3/components/AboutSection.vue")['default']
-export const ContactSection: typeof import("../templates/template3/components/ContactSection.vue")['default']
 export const HeroSection: typeof import("../templates/template3/components/HeroSection.vue")['default']
 export const PageHero: typeof import("../templates/template3/components/PageHero.vue")['default']
 export const ReviewsSection: typeof import("../templates/template3/components/ReviewsSection.vue")['default']
@@ -66,6 +66,7 @@ export const Html: typeof import("../node_modules/nuxt/dist/head/runtime/compone
 export const Body: typeof import("../node_modules/nuxt/dist/head/runtime/components")['Body']
 export const NuxtIsland: typeof import("../node_modules/nuxt/dist/app/components/nuxt-island")['default']
 export const LazyAmenitiesSection: LazyComponent<typeof import("../templates/template1/components/AmenitiesSection.vue")['default']>
+export const LazyContactSection: LazyComponent<typeof import("../templates/template1/components/ContactSection.vue")['default']>
 export const LazyFeaturedServices: LazyComponent<typeof import("../templates/template1/components/FeaturedServices.vue")['default']>
 export const LazyGallerySection: LazyComponent<typeof import("../templates/template1/components/GallerySection.vue")['default']>
 export const LazyHeroCarousel: LazyComponent<typeof import("../templates/template1/components/HeroCarousel.vue")['default']>
@@ -77,7 +78,6 @@ export const LazyTestimonialsSection: LazyComponent<typeof import("../templates/
 export const LazyTheFooter: LazyComponent<typeof import("../templates/template1/components/TheFooter.vue")['default']>
 export const LazyTheHeader: LazyComponent<typeof import("../templates/template1/components/TheHeader.vue")['default']>
 export const LazyAboutSection: LazyComponent<typeof import("../templates/template3/components/AboutSection.vue")['default']>
-export const LazyContactSection: LazyComponent<typeof import("../templates/template3/components/ContactSection.vue")['default']>
 export const LazyHeroSection: LazyComponent<typeof import("../templates/template3/components/HeroSection.vue")['default']>
 export const LazyPageHero: LazyComponent<typeof import("../templates/template3/components/PageHero.vue")['default']>
 export const LazyReviewsSection: LazyComponent<typeof import("../templates/template3/components/ReviewsSection.vue")['default']>

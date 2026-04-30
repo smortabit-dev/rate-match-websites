@@ -1,5 +1,5 @@
 <template>
-  <footer class="bg-gray-900 text-white">
+  <footer id="footer" class="bg-gray-900 text-white">
     <!-- Newsletter -->
     <!-- <div class="bg-white border-b border-gray-200">
       <div class="container mx-auto px-4 sm:px-6 py-10 sm:py-12 lg:py-16">
@@ -89,14 +89,66 @@
       </div>
     </div>
 
-    <!-- Bottom bar -->
-    <div class="border-t border-gray-800">
-      <div class="container mx-auto px-4 sm:px-6 py-4 sm:py-6">
-        <div class="flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 gap-4">
-          <p>&copy; {{ new Date().getFullYear() }} {{ info.name || 'Hotel' }}. All rights reserved.</p>
-          <div class="flex flex-wrap justify-center gap-6">
-            <NuxtLink :to="localePath('/sitemap')" class="hover:text-white transition-colors">{{ t.plandesite }}</NuxtLink>
+    <!-- Tech Providers Panel -->
+    <transition name="fade-slide">
+      <div v-if="showTechProviders" class="container mx-auto px-4 mb-6">
+        <div class="bg-[#f0f7ff] rounded-[2rem] p-6 sm:p-6 lg:p-6 relative overflow-hidden border border-blue-100">
+          <div class="flex flex-col lg:flex-row items-center gap-16 lg:gap-32">
+            <div class="text-3xl font-serif font-bold text-[#0a2540] whitespace-nowrap">Rate Match.</div>
+            
+            <div class="flex-1 w-full grid grid-cols-1 md:grid-cols-2 gap-x-24 gap-y-10">
+              <!-- Column 1 -->
+              <div class="space-y-2">
+                <a href="https://rate-match.com" target="_blank" class="flex items-center justify-between group border-b border-blue-200/50 pb-2 hover:border-blue-400 transition-colors">
+                  <span class="text-[13px] font-bold text-[#0a2540]/70 group-hover:text-[#0a2540] transition-colors tracking-wide">Booking Website &copy;</span>
+                  <Icon name="mdi:arrow-top-right" class="text-xl text-blue-300 group-hover:text-blue-500 transition-all group-hover:translate-x-1 group-hover:-translate-y-1" />
+                </a>
+                <a href="https://rate-match.com" target="_blank" class="flex items-center justify-between group border-b border-blue-200/50 pb-2 hover:border-blue-400 transition-colors">
+                  <span class="text-[13px] font-bold text-[#0a2540]/70 group-hover:text-[#0a2540] transition-colors tracking-wide">Hotel Price Checker &copy;</span>
+                  <Icon name="mdi:arrow-top-right" class="text-xl text-blue-300 group-hover:text-blue-500 transition-all group-hover:translate-x-1 group-hover:-translate-y-1" />
+                </a>
+              </div>
+              <!-- Column 2 -->
+              <div class="space-y-2">
+                <a href="https://rate-match.com" target="_blank" class="flex items-center justify-between group border-b border-blue-200/50 pb-2 hover:border-blue-400 transition-colors">
+                  <span class="text-[13px] font-bold text-[#0a2540]/70 group-hover:text-[#0a2540] transition-colors tracking-wide">RateMatch Booking Engine &copy;</span>
+                  <Icon name="mdi:arrow-top-right" class="text-xl text-blue-300 group-hover:text-blue-500 transition-all group-hover:translate-x-1 group-hover:-translate-y-1" />
+                </a>
+              </div>
+            </div>
           </div>
+        </div>
+      </div>
+    </transition>
+
+    <!-- Bottom bar -->
+    <div class="bg-stone-50 border-t border-stone-200">
+      <div class="container mx-auto px-2 py-4">
+        <div class="flex flex-col md:flex-row justify-end items-center text-[10px] sm:text-[11px] text-stone-500 gap-6 sm:gap-6">
+          
+          <!-- Copyright & Powered by -->
+          <div class="flex items-center gap-3">
+            <span class="opacity-80">&copy; {{ new Date().getFullYear() }} - Powered by</span>
+            <a href="https://rate-match.com" target="_blank" class="hover:opacity-80 transition-opacity">
+              <img src="https://rate.picscache.com/sitesAllInOne/Assets_IQScan/img/logo_footer.svg" alt="Rate Match" class="h-4 w-auto" />
+            </a>
+          </div>
+
+          <!-- Technology Providers -->
+          <button @click="showTechProviders = !showTechProviders"
+                  class="bg-[#0a2540] text-white px-3 py-2 rounded-full flex items-center gap-4 hover:bg-[#0d2e50] transition-all shadow-sm group">
+            <span class="font-bold tracking-widest uppercase text-[9px] sm:text-[10px]">Technology providers</span>
+            <div class="w-5 h-5 bg-white rounded-full flex items-center justify-center text-[#0a2540] shadow-inner">
+              <Icon :name="showTechProviders ? 'mdi:close' : 'mdi:chevron-up'" class="text-sm transition-transform group-hover:-translate-y-0.5" />
+            </div>
+          </button>
+
+          <!-- Sitemap -->
+          <NuxtLink :to="localePath('/sitemap')" class="flex items-center gap-2 text-stone-800 hover:text-amber-700 transition-colors font-bold uppercase tracking-widest border-b border-stone-300 pb-0.5">
+            {{ t.plandesite }}
+            <Icon name="mdi:arrow-top-right" class="text-sm opacity-40" />
+          </NuxtLink>
+
         </div>
       </div>
     </div>
@@ -112,6 +164,7 @@ const { loadCatalogue, transStatic } = useTranslations()
 const email = ref('')
 const name = ref('')
 const acceptPolicy = ref(false)
+const showTechProviders = ref(false)
 const info = ref({ name: '', logo: null, address: '', city: '', country: '', phone: '', emails: '', socials: [] })
 
 const STATIC_KEYS = ['contact', 'hotel', 'politiquedeconfidentialite', 'suiveznous', 'faq2', 'conditionsgenerales', 'plandesite', 'newsletter', 'nom', 'entrervotrenom', 'email', 'entrervotreadressee-mail', 'envoyer']
@@ -135,3 +188,12 @@ const handleNewsletter = () => {
   name.value = ''
 }
 </script>
+<style scoped>
+.fade-slide-enter-active, .fade-slide-leave-active {
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fade-slide-enter-from, .fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+</style>

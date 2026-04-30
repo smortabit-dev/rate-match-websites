@@ -235,6 +235,8 @@ export const useHotel = () => {
                     isFumeur, price: chamber.lessprix || 200,
                     description, longDescription, images, thumbnail: images[0], image: images[0], img: chamber.img || [],
                     isBookingBasic: chamber.isBookingBasic ?? chamberItem.isBookingBasic ?? false,
+                    lit: chamber.lit || {},
+                    maxoccup: chamber.maxoccup || '',
                     features: extractFeaturesFromGroupcarac(chamber.groupcarac, catalogue, transChamberCarac) || getDefaultFeatures(),
                     amenitiesCategories: buildCategoriesFromGroupcarac(chamber.groupcarac, catalogue, transChamberCarac, transGroupeCarac)
                 }

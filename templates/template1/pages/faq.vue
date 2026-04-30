@@ -3,9 +3,9 @@
     <!-- Return Bar -->
     <div class="bg-[#5c544d] w-full">
       <div class="container mx-auto px-4 sm:px-6 py-4">
-        <NuxtLink :to="localePath('/')" class="inline-flex items-center text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:text-[#d4af37] transition-colors">
+        <NuxtLink :to="localePath('/') + '#footer'" class="inline-flex items-center text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:text-[#d4af37] transition-colors">
           <Icon name="mdi:arrow-left" class="mr-3 text-lg" />
-          {{ t.retouralaccueil }}
+          {{ t.retour }}
         </NuxtLink>
       </div>
     </div>
@@ -37,7 +37,7 @@ const { locale, localePath } = useLocale()
 const { loadCatalogue, transStatic } = useTranslations()
 const { fetchFaq } = useHotel()
 
-const STATIC_KEYS = ['retour', 'faq2', 'retouralaccueil']
+const STATIC_KEYS = ['retour', 'faq2']
 const t = ref(Object.fromEntries(STATIC_KEYS.map(k => [k, k])))
 
 const openIndex = ref(null)

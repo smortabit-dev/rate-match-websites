@@ -15,6 +15,7 @@ type LazyComponent<T> = DefineComponent<HydrationStrategies, {}, {}, {}, {}, {},
 
 interface _GlobalComponents {
   AmenitiesSection: typeof import("../../templates/template1/components/AmenitiesSection.vue")['default']
+  ContactSection: typeof import("../../templates/template1/components/ContactSection.vue")['default']
   FeaturedServices: typeof import("../../templates/template1/components/FeaturedServices.vue")['default']
   GallerySection: typeof import("../../templates/template1/components/GallerySection.vue")['default']
   HeroCarousel: typeof import("../../templates/template1/components/HeroCarousel.vue")['default']
@@ -26,7 +27,6 @@ interface _GlobalComponents {
   TheFooter: typeof import("../../templates/template1/components/TheFooter.vue")['default']
   TheHeader: typeof import("../../templates/template1/components/TheHeader.vue")['default']
   AboutSection: typeof import("../../templates/template3/components/AboutSection.vue")['default']
-  ContactSection: typeof import("../../templates/template3/components/ContactSection.vue")['default']
   HeroSection: typeof import("../../templates/template3/components/HeroSection.vue")['default']
   PageHero: typeof import("../../templates/template3/components/PageHero.vue")['default']
   ReviewsSection: typeof import("../../templates/template3/components/ReviewsSection.vue")['default']
@@ -66,6 +66,7 @@ interface _GlobalComponents {
   Body: typeof import("../../node_modules/nuxt/dist/head/runtime/components")['Body']
   NuxtIsland: typeof import("../../node_modules/nuxt/dist/app/components/nuxt-island")['default']
   LazyAmenitiesSection: LazyComponent<typeof import("../../templates/template1/components/AmenitiesSection.vue")['default']>
+  LazyContactSection: LazyComponent<typeof import("../../templates/template1/components/ContactSection.vue")['default']>
   LazyFeaturedServices: LazyComponent<typeof import("../../templates/template1/components/FeaturedServices.vue")['default']>
   LazyGallerySection: LazyComponent<typeof import("../../templates/template1/components/GallerySection.vue")['default']>
   LazyHeroCarousel: LazyComponent<typeof import("../../templates/template1/components/HeroCarousel.vue")['default']>
@@ -77,7 +78,6 @@ interface _GlobalComponents {
   LazyTheFooter: LazyComponent<typeof import("../../templates/template1/components/TheFooter.vue")['default']>
   LazyTheHeader: LazyComponent<typeof import("../../templates/template1/components/TheHeader.vue")['default']>
   LazyAboutSection: LazyComponent<typeof import("../../templates/template3/components/AboutSection.vue")['default']>
-  LazyContactSection: LazyComponent<typeof import("../../templates/template3/components/ContactSection.vue")['default']>
   LazyHeroSection: LazyComponent<typeof import("../../templates/template3/components/HeroSection.vue")['default']>
   LazyPageHero: LazyComponent<typeof import("../../templates/template3/components/PageHero.vue")['default']>
   LazyReviewsSection: LazyComponent<typeof import("../../templates/template3/components/ReviewsSection.vue")['default']>

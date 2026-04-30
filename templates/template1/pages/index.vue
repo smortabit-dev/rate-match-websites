@@ -59,7 +59,10 @@
     <LazyGallerySection id="galerie" />
 
     <!-- Location & Surroundings -->
-    <LazyLocationMap id="contact" />
+    <LazyLocationMap id="alentours" />
+
+    <!-- Contact -->
+    <LazyContactSection id="contact" />
   </div>
 </template>
 

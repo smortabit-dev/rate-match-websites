@@ -1,10 +1,10 @@
 <template>
   <section class="py-16 sm:py-24 bg-white overflow-hidden">
     <div class="container mx-auto px-4 sm:px-6">
-      <!-- Title with line -->
-      <div class="flex items-center gap-4 mb-10">
-        <div class="w-16 h-px bg-gray-800"></div>
-        <h2 class="section-title text-gray-800 italic capitalize">{{ titleText }}</h2>
+      <!-- Header -->
+      <div class="mb-10 sm:mb-16">
+        <p class="section-subtitle">{{ subtitleText }}</p>
+        <h2 class="section-title">{{ titleText }}</h2>
       </div>
     </div>
 
@@ -139,8 +139,8 @@ onMounted(async () => {
     loadCatalogue(locale.value),
   ])
   galleryImages.value = images
-  titleText.value     = transStatic('galerie',         catalogue)
-  subtitleText.value  = transStatic('galeriedaccueil', catalogue)
+  titleText.value    = transStatic('galerie',         catalogue, 'Galerie')
+  subtitleText.value  = transStatic('decouvreznotreetablissementenimages', catalogue, 'Découvrez notre établissement en images')
   loading.value = false
 
   autoTimer = setInterval(tick, 16)

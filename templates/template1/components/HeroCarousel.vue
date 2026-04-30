@@ -89,20 +89,24 @@ const resetInterval = () => { if (intervalId) clearInterval(intervalId); startIn
 
 const openBooking = () => { window.dispatchEvent(new Event('open-reservation')) }
 
-function loadWidget(code, currency) {
-  // Remove existing widget script so it reloads with new currency
+function loadWidget(code, currency, lang) {
+  // Remove existing widget script so it reloads with new currency/lang
   const existing = document.getElementById('RMW_script_tag')
   if (existing) existing.remove()
   if (!code) return
   const script = document.createElement('script')
   script.id = 'RMW_script_tag'
-  script.src = `https://widget.rate-match.com/scripts/widget-loader.min.js?key=${code}&currency=${currency}&v=${Date.now()}`
+  script.src = `https://widget.rate-match.com/scripts/widget-loader.min.js?key=${code}&currency=${currency}&lang=${lang}&v=${Date.now()}`
   script.async = true
   document.body.appendChild(script)
 }
 
 watch(selectedCurrency, (currency) => {
-  if (widgetCode.value) loadWidget(widgetCode.value, currency)
+  if (widgetCode.value) loadWidget(widgetCode.value, currency, locale.value)
+})
+
+watch(locale, (lang) => {
+  if (widgetCode.value) loadWidget(widgetCode.value, selectedCurrency.value, lang)
 })
 
 onMounted(async () => {
@@ -130,7 +134,7 @@ onMounted(async () => {
     if (code) {
       widgetCode.value = code
       await nextTick()
-      loadWidget(code, selectedCurrency.value)
+      loadWidget(code, selectedCurrency.value, locale.value)
     }
   })
 })
