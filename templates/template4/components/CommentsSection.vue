@@ -7,18 +7,18 @@
 
     <!-- Filters -->
     <div class="flex justify-center flex-wrap gap-4 md:gap-8 mb-20 text-sm font-semibold tracking-wider px-6">
-      <button @click="activeSource = 'TripAdvisor'" 
-              class="relative pb-2 transition-colors uppercase"
-              :class="activeSource === 'TripAdvisor' ? 'text-[#002B5B]' : 'text-gray-400 hover:text-[#002B5B]'">
-        Comments By TripAdvisor.com
-        <div v-show="activeSource === 'TripAdvisor'" class="absolute bottom-0 left-0 right-0 h-[2px] bg-[#D4AF37]"></div>
-      </button>
-      <div class="hidden md:block w-1.5 h-1.5 rounded-full bg-blue-900/20 mt-2"></div>
       <button @click="activeSource = 'Booking.com'" 
               class="relative pb-2 transition-colors uppercase"
               :class="activeSource === 'Booking.com' ? 'text-[#002B5B]' : 'text-gray-400 hover:text-[#002B5B]'">
         Comments By Booking.com
         <div v-show="activeSource === 'Booking.com'" class="absolute bottom-0 left-0 right-0 h-[2px] bg-[#D4AF37]"></div>
+      </button>
+      <div class="hidden md:block w-1.5 h-1.5 rounded-full bg-blue-900/20 mt-2"></div>
+      <button @click="activeSource = 'TripAdvisor'" 
+              class="relative pb-2 transition-colors uppercase"
+              :class="activeSource === 'TripAdvisor' ? 'text-[#002B5B]' : 'text-gray-400 hover:text-[#002B5B]'">
+        Comments By TripAdvisor.com
+        <div v-show="activeSource === 'TripAdvisor'" class="absolute bottom-0 left-0 right-0 h-[2px] bg-[#D4AF37]"></div>
       </button>
     </div>
 
@@ -83,9 +83,7 @@
                   <p v-if="comment.source !== 'TripAdvisor'" class="text-[#D4AF37] text-[10px] font-bold uppercase tracking-widest">{{ comment.location }}, {{ comment.date }}</p>
                 </div>
 
-                <p class="text-[#003471] leading-relaxed italic flex-1 mb-8 line-clamp-4">
-                  “{{ comment.text }}”
-                </p>
+                <p class="text-[#003471] leading-relaxed italic flex-1 mb-8 line-clamp-4" v-html="comment.text"></p>
 
                 <div class="flex items-center justify-between pt-8 border-t border-gray-100">
                   <div class="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase tracking-wider">
@@ -184,7 +182,7 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 
 const { locale } = useLocale()
 const allComments = ref([])
-const activeSource = ref('TripAdvisor')
+const activeSource = ref('Booking.com')
 const currentIndex = ref(0)
 const visibleCount = ref(3)
 
@@ -201,9 +199,10 @@ const activePopupIndex = computed(() => {
 
 const updateVisibleCount = () => {
   const w = window.innerWidth
-  if (w < 768) visibleCount.value = 1
-  else if (w < 1280) visibleCount.value = 2
-  else visibleCount.value = 2.5
+  if (w < 769) visibleCount.value = 1
+  else if (w < 1025) visibleCount.value = 2
+  else if (w < 1441) visibleCount.value = 2.5
+  else visibleCount.value = 3.1
 }
 
 const prev = () => { 

@@ -56,7 +56,8 @@ const languages = ref([])
 const switchLocale = (newLocale) => {
   open.value = false
   if (newLocale !== locale.value) {
-    router.push(switchLocalePath(newLocale))
+    const path = switchLocalePath(newLocale)
+    window.location.href = path
   }
 }
 

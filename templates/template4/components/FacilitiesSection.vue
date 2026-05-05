@@ -8,14 +8,14 @@
       <div class="relative max-w-6xl mx-auto bg-white shadow-2xl flex flex-col md:flex-row overflow-hidden min-h-[600px]">
         <!-- Left: Category List (Navy) -->
         <div class="md:w-[40%] bg-[#003471] text-white flex flex-col items-stretch relative">
-          <div class="flex-1 overflow-y-auto scrollbar-hide py-16 px-10 md:px-16 max-h-[600px]">
-            <ul class="space-y-4">
+          <div class="flex-1 overflow-y-auto py-12 px-8 md:py-16 md:px-16 max-h-[300px] md:max-h-[650px] custom-scrollbar">
+            <ul class="space-y-2 md:space-y-4">
               <!-- Filter option for ALL if needed, but here we just list categories -->
               <li v-for="(cat, idx) in categories" :key="idx" 
                   @click="activeCategoryIndex = idx"
                   class="group cursor-pointer flex items-center transition-all duration-300">
                 <div 
-                  class="px-5 py-3 text-lg font-bold transition-all duration-300 w-full text-left"
+                  class="px-4 py-2 md:px-5 md:py-3 text-base md:text-lg font-bold transition-all duration-300 w-full text-left"
                   :class="activeCategoryIndex === idx ? 'bg-white/10 text-white shadow-sm ring-1 ring-white/20' : 'text-white/50 hover:text-white'"
                 >
                   {{ cat.name }}
@@ -23,37 +23,34 @@
               </li>
             </ul>
           </div>
-
-          <!-- Decorative Gold Line indicator -->
-          <div class="absolute right-0 top-0 bottom-0 w-[4px] bg-white/5">
-            <div 
-              class="w-full bg-[#D4AF37] transition-all duration-500 rounded-full"
-              :style="{ 
-                height: `${100 / Math.max(1, categories.length)}%`, 
-                transform: `translateY(${activeCategoryIndex * 100}%)`,
-                maxHeight: '100px'
-              }"
-            ></div>
-          </div>
         </div>
 
         <!-- Right: Category Details (White) -->
-        <div class="md:w-[60%] p-10 md:p-20 flex flex-col items-center justify-start text-center overflow-y-auto max-h-[600px]">
-          <div v-if="activeCategory" class="w-full animate-fade-in" :key="activeCategoryIndex">
-            <h3 class="text-3xl font-serif font-bold text-[#002B5B] mb-12">{{ activeCategory.name }}</h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-left mx-auto max-w-2xl">
-              <div v-for="(item, iIdx) in activeCategory.items" :key="iIdx" class="flex items-center gap-3 text-gray-600">
-                <div class="w-1.5 h-1.5 rounded-full bg-[#D4AF37]"></div>
-                <span class="text-sm md:text-base font-medium">{{ item }}</span>
+        <div class="md:w-[60%] flex flex-col bg-white max-h-[500px] md:max-h-[650px]">
+          <!-- Scrollable Items Area -->
+          <div class="flex-1 overflow-y-auto p-10 md:p-20 custom-scrollbar">
+            <div v-if="activeCategory" class="w-full animate-fade-in" :key="activeCategoryIndex">
+              <h3 class="text-3xl font-serif font-bold text-[#002B5B] mb-12">{{ activeCategory.name }}</h3>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-left mx-auto max-w-2xl">
+                <div v-for="(item, iIdx) in activeCategory.items" :key="iIdx" class="flex items-center gap-3 text-gray-600">
+                  <div class="w-1.5 h-1.5 rounded-full bg-[#D4AF37]"></div>
+                  <span class="text-sm md:text-base font-medium">{{ item }}</span>
+                </div>
               </div>
             </div>
+          </div>
 
-            <!-- Dots -->
-            <div class="flex justify-center gap-2 mt-20 pb-10">
-              <div class="w-2.5 h-2.5 rounded-full bg-[#D4AF37]"></div>
-              <div v-for="i in 12" :key="i" class="w-2 h-2 rounded-full bg-blue-900/10"></div>
-            </div>
+          <!-- Fixed Bottom Dots Navigation -->
+          <div v-if="categories.length > 1" class="p-6 md:p-8 bg-white border-t border-gray-50 flex justify-center flex-wrap gap-2">
+            <button 
+              v-for="(cat, idx) in categories" 
+              :key="idx" 
+              @click="activeCategoryIndex = idx"
+              class="transition-all duration-300 rounded-full"
+              :class="activeCategoryIndex === idx ? 'w-8 h-2 bg-[#D4AF37]' : 'w-2 h-2 bg-blue-900/10 hover:bg-blue-900/20'"
+              :title="cat.name"
+            ></button>
           </div>
         </div>
       </div>
@@ -138,6 +135,14 @@ onMounted(async () => {
   animation: fade-in 0.6s cubic-bezier(0.2, 1, 0.3, 1) forwards;
 }
 
-.scrollbar-hide::-webkit-scrollbar { display: none; }
-.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 52, 113, 0.05);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #D4AF37;
+  border-radius: 10px;
+}
 </style>

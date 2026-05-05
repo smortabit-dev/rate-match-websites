@@ -1,5 +1,5 @@
 <template>
-  <section class="py-16 sm:py-24 bg-white">
+  <section id="services" class="py-16 sm:py-24 bg-white">
     <div class="container mx-auto px-4 sm:px-6">
       <div v-if="loading" class="text-center py-20">
         <div class="inline-block animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-amber-700"></div>
@@ -19,7 +19,7 @@
                       :class="activeFilter === 'all'
                         ? 'bg-amber-700 text-white border-amber-700'
                         : 'bg-transparent text-gray-600 border-gray-300 hover:border-amber-700 hover:text-amber-700'">
-                {{ t.tous }}
+                {{ t.all }}
               </button>
               <button v-for="group in groups" :key="group.id"
                       @click="switchFilter(group.id)"
@@ -247,7 +247,7 @@ const updateVisibleCount = () => {
   else visibleCount.value = 3
 }
 
-const STATIC_KEYS = ['servicesdelhotel', 'decouvrezlesservices', 'ensavoirplus', 'tous',
+const STATIC_KEYS = ['servicesdelhotel', 'decouvrezlesservices', 'ensavoirplus', 'all',
   'ensupplement', 'apartirde', 'parunite', 'parsejour', 'nepasspecifier',
   'pour$x1personne', 'pour$x1personnes', 'telecharger']
 
@@ -326,7 +326,10 @@ onMounted(async () => {
   etabCurrency.value = hotelInfo.currency || 'EUR'
   groups.value = serviceGroups
   const translated = {}
-  for (const key of STATIC_KEYS) translated[key] = transStatic(key, catalogue)
+  for (const key of STATIC_KEYS) {
+    const finalKey = key === 'all' ? 'all' : key
+    translated[key] = transStatic(finalKey, catalogue)
+  }
   t.value = translated
   loading.value = false
 })

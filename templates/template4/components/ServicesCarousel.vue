@@ -206,14 +206,16 @@ const selectedService = computed(() => selectedIdx.value !== null ? filteredServ
 const updateVisibleCount = () => {
   const w = window.innerWidth
   // Bottom services
-  if (w < 768) visibleCount.value = 1
-  else if (w < 1280) visibleCount.value = 2
-  else visibleCount.value = 2.5
+  if (w < 769) visibleCount.value = 1
+  else if (w < 1025) visibleCount.value = 2
+  else if (w < 1441) visibleCount.value = 2.5
+  else visibleCount.value = 3.1
 
   // Top categories
   if (w < 640) catVisibleCount.value = 1
-  else if (w < 1024) catVisibleCount.value = 2
-  else catVisibleCount.value = 3
+  else if (w < 1025) catVisibleCount.value = 2
+  else if (w < 1441) catVisibleCount.value = 3
+  else catVisibleCount.value = 4
 }
 
 const filteredServices = computed(() => {

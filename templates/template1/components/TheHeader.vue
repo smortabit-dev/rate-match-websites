@@ -201,6 +201,7 @@ const selectCurrency = (code) => {
   selectedCurrency.value = code
   currencyPanelOpen.value = false
   currencySearch.value = ''
+  window.location.reload()
 }
 
 const handleScroll = () => { scrolled.value = !isHomePage.value || window.scrollY > 50 }
@@ -270,7 +271,18 @@ const scrollToSection = (item) => {
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } else {
       const el = document.getElementById(sectionId)
-      if (el) el.scrollIntoView({ behavior: 'smooth' })
+      if (el) {
+        const offset = 100
+        const bodyRect = document.body.getBoundingClientRect().top
+        const elementRect = el.getBoundingClientRect().top
+        const elementPosition = elementRect - bodyRect
+        const offsetPosition = elementPosition - offset
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        })
+      }
     }
   })
 }

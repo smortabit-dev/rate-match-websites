@@ -44,13 +44,23 @@
       <div class="w-px h-8 bg-gradient-to-b from-transparent to-white/40"></div>
       <Icon name="mdi:arrow-down" class="text-white/50 text-base animate-bounce" />
     </div>
+
+    <!-- Rate-Match Widget (top) -->
+    <div v-if="widgetCode" class="absolute top-20 sm:top-24 left-0 right-0 z-30">
+      <div class="container mx-auto px-4 sm:px-6">
+        <div id="RMW_widget_container"></div>
+      </div>
+    </div>
   </section>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 
-const { locale } = useLocale()
+const { locale, localePath } = useLocale()
+const route = useRoute()
+const selectedCurrency = useCurrency()
+
 const bgImage    = ref('')
 const hotelName  = ref('Hotel')
 const subtitle   = ref('Boutique Hôtel & Spa')
@@ -60,6 +70,67 @@ const avgRating  = ref('')
 const ratingLabel = ref('Fabuleux')
 
 const stars = computed(() => Array.from({ length: starCount.value }))
+
+const isHomePage = computed(() => {
+  const path = route.path.replace(/\/$/, '')
+  const home = localePath('/').replace(/\/$/, '')
+  return path === home || path === ''
+})
+
+const widgetCode = ref('')
+
+function loadWidget(code, currency, lang) {
+  if (!isHomePage.value) return
+
+  // 1. Clear our primary container
+  const container = document.getElementById('RMW_widget_container')
+  if (container) container.innerHTML = ''
+
+  // 2. Remove the widget script tag
+  const existing = document.getElementById('RMW_script_tag')
+  if (existing) existing.remove()
+
+  // 3. Remove any other scripts injected by the RateMatch loader
+  document.querySelectorAll('script[src*="rate-match.com"]').forEach(s => s.remove())
+
+  // 4. Cleanup floating elements
+  const floatingElements = document.querySelectorAll('[id^="RMW_"], [class^="RMW_"]')
+  floatingElements.forEach(el => {
+    if (el.id !== 'RMW_widget_container') el.remove()
+  })
+  
+  // 5. Cleanup high z-index elements
+  document.querySelectorAll('div').forEach(div => {
+    if (div.style.zIndex === '10000' || div.style.zIndex === '10001') {
+      div.remove()
+    }
+  })
+
+  // 6. Clear globals
+  delete window.RMW
+  delete window.RateMatch
+  delete window.RateMatchWidget
+
+  if (!code) return
+
+  // Use a small timeout to ensure DOM changes are processed before new script runs
+  setTimeout(() => {
+    const script = document.createElement('script')
+    script.id = 'RMW_script_tag'
+    script.src = `https://widget.rate-match.com/scripts/widget-loader.min.js?key=${code}&currency=${currency}&lang=${lang}&v=${Date.now()}`
+    script.async = true
+    document.body.appendChild(script)
+  }, 100)
+}
+
+watch(selectedCurrency, (currency) => {
+  if (widgetCode.value) loadWidget(widgetCode.value, currency, locale.value)
+})
+
+watch(locale, async (lang) => {
+  await nextTick()
+  if (widgetCode.value) loadWidget(widgetCode.value, selectedCurrency.value, lang)
+})
 
 onMounted(async () => {
   const { fetchHotelInfo, fetchHotelData, fetchGallery, fetchComments } = useHotel()
@@ -86,6 +157,28 @@ onMounted(async () => {
     avgRating.value = avg.toFixed(1)
     ratingLabel.value = avg >= 9 ? 'Exceptionnel' : avg >= 8 ? 'Fabuleux' : avg >= 7 ? 'Très bien' : 'Bien'
   }
+
+  // Load widget if on homepage
+  if (isHomePage.value) {
+    const code = etab.code_widget
+    if (code) {
+      widgetCode.value = code
+      await nextTick()
+      loadWidget(code, selectedCurrency.value, locale.value)
+    }
+  }
+})
+
+onUnmounted(() => {
+  const script = document.getElementById('RMW_script_tag')
+  if (script) script.remove()
+  
+  const floatingElements = document.querySelectorAll('[id^="RMW_"], [class^="RMW_"]')
+  floatingElements.forEach(el => {
+    if (el.id !== 'RMW_widget_container') {
+      el.remove()
+    }
+  })
 })
 </script>
 

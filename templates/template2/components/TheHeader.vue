@@ -144,6 +144,7 @@ const selectCurrency = (code) => {
   selectedCurrency.value = code
   currencyOpen.value = false
   currSearch.value = ''
+  window.location.reload()
 }
 
 const KEYS = ['noschambres', 'dining', 'services', 'gallery', 'contact', 'facilities', 'surroundings', 'reviews']

@@ -1,5 +1,5 @@
 <template>
-  <section class="py-16 sm:py-24 bg-stone-100">
+  <section id="amenities" class="py-16 sm:py-24 bg-stone-100">
     <div class="container mx-auto px-4 sm:px-6">
 
 
@@ -21,7 +21,7 @@
                     :class="activeGroup === null
                       ? 'bg-amber-700 text-white border-amber-700'
                       : 'bg-transparent text-gray-600 border-gray-300 hover:border-amber-700 hover:text-amber-700'">
-              {{ t.tous }}
+              {{ t.all }}
             </button>
             <button v-for="g in visibleGroups" :key="g.ftId"
                     @click="setGroup(g.ftId)"
@@ -97,7 +97,7 @@ const visibleGroups = computed(() =>
   allGroups.value.slice(filterOffset.value, filterOffset.value + FILTER_VISIBLE)
 )
 
-const t = ref({ decouvreznosequipements: 'Découvrez nos équipements', tous: 'Tous' })
+const t = ref({ decouvreznosequipements: 'Découvrez nos équipements', all: 'all' })
 
 const { locale } = useLocale()
 
@@ -182,7 +182,7 @@ onMounted(async () => {
 
     subtitleText.value = transStatic('facilities&services', catalogue, 'Équipements & Services')
     t.value.decouvreznosequipements = transStatic('decouvreznosequipements', catalogue, 'Découvrez nos équipements')
-    t.value.tous = transStatic('tous', catalogue, 'Tous')
+    t.value.all = transStatic('all', catalogue, 'all')
 
     const rawFac = data?.facilities ?? []
     const facArr = Array.isArray(rawFac) ? rawFac : Object.values(rawFac)

@@ -1,8 +1,8 @@
 <template>
-  <section class="py-16 sm:py-24 bg-white overflow-hidden">
+  <section id="galerie" class="py-16 sm:py-24 bg-white overflow-hidden">
     <div class="container mx-auto px-4 sm:px-6">
       <!-- Header -->
-      <div class="mb-10 sm:mb-16">
+      <div class="mb-10 sm:mb-16" :class="dir === 'rtl' ? 'text-right' : 'text-left'">
         <p class="section-subtitle">{{ subtitleText }}</p>
         <h2 class="section-title">{{ titleText }}</h2>
       </div>
@@ -23,7 +23,7 @@
 
         <!-- Scrollable track -->
         <div class="flex gap-4"
-             :style="{ transform: `translateX(-${offset}px)`, transition: isSnapping ? 'transform 0.4s ease' : 'none' }">
+             :style="{ transform: `translateX(${dir === 'rtl' ? offset : -offset}px)`, transition: isSnapping ? 'transform 0.4s ease' : 'none' }">
           <div v-for="(image, idx) in duplicatedImages" :key="idx"
                class="flex-shrink-0 w-[180px] sm:w-[240px] lg:w-[280px]"
                @click="openLightbox(idx % galleryImages.length)">
@@ -76,7 +76,7 @@ const lightboxIndex = ref(0)
 const titleText    = ref('galerie')
 const subtitleText = ref('galeriedaccueil')
 
-const { locale } = useLocale()
+const { locale, dir } = useLocale()
 
 const duplicatedImages = computed(() => [...galleryImages.value, ...galleryImages.value])
 

@@ -1,7 +1,7 @@
 <template>
-  <section class="py-24 bg-white">
+  <section id="rooms" class="py-24 bg-white">
     <div class="container mx-auto px-6">
-      <div class="text-left mb-16">
+      <div class="mb-16" :class="dir === 'rtl' ? 'text-right' : 'text-left'">
         <p class="section-subtitle">{{ t.discover }}</p>
         <h2 class="section-title">{{ t.chambressuites }}</h2>
       </div>
@@ -15,7 +15,7 @@
              @touchstart.passive="dragStart" @touchmove.passive="dragMove" @touchend="dragEnd">
           <div class="flex ease-in-out"
                :class="isDragging ? 'transition-none' : 'transition-transform duration-600'"
-               :style="{ transform: `translateX(calc(-${currentIndex * (100 / visibleCount)}% + ${dragOffset}px))` }">
+               :style="{ transform: `translateX(calc(${dir === 'rtl' ? '' : '-'}${currentIndex * (100 / visibleCount)}% + ${dragOffset}px))` }">
             <div v-for="room in rooms" :key="room.id"
                  class="flex-shrink-0 px-4"
                  :style="{ width: `${100 / visibleCount}%` }">
@@ -127,7 +127,7 @@ const updateVisibleCount = () => {
 const STATIC_KEYS = ['discover', 'chambressuites', 'voirlesdetails', 'nuit', 'verifierladisponibilite']
 const t = ref(Object.fromEntries(STATIC_KEYS.map(k => [k, k])))
 
-const { locale, localePath } = useLocale()
+const { locale, localePath, dir } = useLocale()
 
 const maxIndex = computed(() => Math.max(0, rooms.value.length - visibleCount.value))
 const prev = () => { if (currentIndex.value > 0) currentIndex.value-- }

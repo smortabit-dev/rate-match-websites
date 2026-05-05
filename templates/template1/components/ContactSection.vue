@@ -1,5 +1,5 @@
 <template>
-  <section class="bg-white py-16 sm:py-24">
+  <section id="contact" class="bg-white py-16 sm:py-24">
     <div class="container mx-auto px-4 sm:px-6">
 
       <!-- Section header -->

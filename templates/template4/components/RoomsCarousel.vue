@@ -168,9 +168,10 @@ const { locale, localePath } = useLocale()
 
 const updateVisibleCount = () => {
   const w = window.innerWidth
-  if (w < 768) visibleCount.value = 1
-  else if (w < 1280) visibleCount.value = 2
-  else visibleCount.value = 2.5
+  if (w < 769) visibleCount.value = 1
+  else if (w < 1025) visibleCount.value = 2
+  else if (w < 1441) visibleCount.value = 2.5
+  else visibleCount.value = 3.1
 }
 
 const prev = () => { currentIndex.value = currentIndex.value > 0 ? currentIndex.value - 1 : rooms.value.length - 1 }

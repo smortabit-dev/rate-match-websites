@@ -185,13 +185,15 @@ const currencies = ref([])
 const switchLocale = (newLocale) => {
   langPanelOpen.value = false
   if (newLocale !== locale.value) {
-    router.push(switchLocalePath(newLocale))
+    const path = switchLocalePath(newLocale)
+    window.location.href = path
   }
 }
 
 const selectCurrency = (code) => {
   selectedCurrency.value = code
   currPanelOpen.value = false
+  window.location.reload()
 }
 
 watch([langPanelOpen, currPanelOpen], ([langOpen, currOpen]) => {

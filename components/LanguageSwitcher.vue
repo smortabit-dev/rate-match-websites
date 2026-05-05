@@ -54,7 +54,8 @@ const switchLocale = (newLocale) => {
   panelOpen.value = false
   document.body.style.overflow = 'auto'
   if (newLocale !== locale.value) {
-    router.push(switchLocalePath(newLocale))
+    const path = switchLocalePath(newLocale)
+    window.location.href = path
   }
 }
 

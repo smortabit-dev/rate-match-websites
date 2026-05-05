@@ -29,7 +29,10 @@ const el     = ref(null)
 
 const switchLang = (code) => {
   open.value = false
-  router.push(switchLocalePath(code))
+  if (code !== locale.value) {
+    const path = switchLocalePath(code)
+    window.location.href = path
+  }
 }
 
 const onOutside = (e) => { if (el.value && !el.value.contains(e.target)) open.value = false }

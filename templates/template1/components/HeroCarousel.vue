@@ -1,5 +1,5 @@
 <template>
-  <section class="relative h-screen">
+  <section id="hero" class="relative h-screen">
     <!-- Carousel Images -->
     <div class="absolute inset-0">
       <TransitionGroup name="fade">
@@ -89,23 +89,63 @@ const resetInterval = () => { if (intervalId) clearInterval(intervalId); startIn
 
 const openBooking = () => { window.dispatchEvent(new Event('open-reservation')) }
 
+const route = useRoute()
+const isHomePage = computed(() => {
+  const path = route.path.replace(/\/$/, '')
+  const home = localePath('/').replace(/\/$/, '')
+  return path === home || path === ''
+})
+
 function loadWidget(code, currency, lang) {
-  // Remove existing widget script so it reloads with new currency/lang
+  if (!isHomePage.value) return
+
+  // 1. Clear our primary container
+  const container = document.getElementById('RMW_widget_container')
+  if (container) container.innerHTML = ''
+
+  // 2. Remove the widget script tag
   const existing = document.getElementById('RMW_script_tag')
   if (existing) existing.remove()
+
+  // 3. Remove any other scripts injected by the RateMatch loader
+  document.querySelectorAll('script[src*="rate-match.com"]').forEach(s => s.remove())
+
+  // 4. Cleanup floating elements
+  const floatingElements = document.querySelectorAll('[id^="RMW_"], [class^="RMW_"]')
+  floatingElements.forEach(el => {
+    if (el.id !== 'RMW_widget_container') el.remove()
+  })
+  
+  // 5. Cleanup high z-index elements
+  document.querySelectorAll('div').forEach(div => {
+    if (div.style.zIndex === '10000' || div.style.zIndex === '10001') {
+      div.remove()
+    }
+  })
+
+  // 6. Clear globals
+  delete window.RMW
+  delete window.RateMatch
+  delete window.RateMatchWidget
+
   if (!code) return
-  const script = document.createElement('script')
-  script.id = 'RMW_script_tag'
-  script.src = `https://widget.rate-match.com/scripts/widget-loader.min.js?key=${code}&currency=${currency}&lang=${lang}&v=${Date.now()}`
-  script.async = true
-  document.body.appendChild(script)
+
+  // Use a small timeout to ensure DOM changes are processed before new script runs
+  setTimeout(() => {
+    const script = document.createElement('script')
+    script.id = 'RMW_script_tag'
+    script.src = `https://widget.rate-match.com/scripts/widget-loader.min.js?key=${code}&currency=${currency}&lang=${lang}&v=${Date.now()}`
+    script.async = true
+    document.body.appendChild(script)
+  }, 100)
 }
 
 watch(selectedCurrency, (currency) => {
   if (widgetCode.value) loadWidget(widgetCode.value, currency, locale.value)
 })
 
-watch(locale, (lang) => {
+watch(locale, async (lang) => {
+  await nextTick()
   if (widgetCode.value) loadWidget(widgetCode.value, selectedCurrency.value, lang)
 })
 
@@ -129,17 +169,34 @@ onMounted(async () => {
   t.value = translated
 
   // Non-critical: load widget in background after images are shown
-  fetchHotelData().then(async (hotelData) => {
-    const code = hotelData?.etablissment?.code_widget
-    if (code) {
-      widgetCode.value = code
-      await nextTick()
-      loadWidget(code, selectedCurrency.value, locale.value)
+  if (isHomePage.value) {
+    fetchHotelData().then(async (hotelData) => {
+      const code = hotelData?.etablissment?.code_widget
+      if (code) {
+        widgetCode.value = code
+        await nextTick()
+        loadWidget(code, selectedCurrency.value, locale.value)
+      }
+    })
+  }
+})
+
+onUnmounted(() => {
+  if (intervalId) clearInterval(intervalId)
+  
+  // Cleanup widget script and any floating elements it might have created
+  const script = document.getElementById('RMW_script_tag')
+  if (script) script.remove()
+  
+  // Some widgets create floating containers at the body level
+  // We look for common IDs or patterns used by RateMatch widgets
+  const floatingElements = document.querySelectorAll('[id^="RMW_"], [class^="RMW_"]')
+  floatingElements.forEach(el => {
+    if (el.id !== 'RMW_widget_container') { // Don't remove the one in our template, Vue handles it
+      el.remove()
     }
   })
 })
-
-onUnmounted(() => { if (intervalId) clearInterval(intervalId) })
 </script>
 
 <style scoped>
