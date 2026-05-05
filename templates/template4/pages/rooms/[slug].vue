@@ -47,17 +47,20 @@
 import { ref, onMounted } from 'vue'
 
 const { locale } = useLocale()
+const { fetchRoom } = useHotel()
 const route = useRoute()
+
 const room = ref(null)
 
 onMounted(async () => {
-  const { fetchRoomBySlug } = useHotel()
-  const slug = route.params.slug
-  room.value = await fetchRoomBySlug(slug, locale.value)
+  const data = await fetchRoom(route.params.slug, locale.value)
+  if (data) room.value = data
 })
 
 const openReservation = () => {
-  // Logic to open reservation modal or redirect
+  if (typeof window !== 'undefined' && window.openReservation) {
+    window.openReservation()
+  }
 }
 </script>
 

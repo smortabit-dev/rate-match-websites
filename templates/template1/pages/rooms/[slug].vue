@@ -5,7 +5,7 @@
 
   <div v-else-if="room">
     <!-- Hero Gallery -->
-    <section class="relative h-[50vh] sm:h-[60vh] lg:h-[90vh]">
+    <section class="relative h-[90vh]">
       <div class="absolute inset-0">
         <transition name="fade" mode="out-in">
           <img :key="currentImageIndex" :src="room.images[currentImageIndex]" :alt="room.name"
@@ -14,7 +14,7 @@
         <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/10 to-black/60"></div>
       </div>
       <!-- Content overlay -->
-      <div class="relative h-full flex items-end pb-10 sm:pb-16 lg:pb-20 z-10">
+      <div class="relative h-full flex items-end pb-24 sm:pb-16 lg:pb-20 z-10">
         <div class="container mx-auto px-4 sm:px-6">
           <!-- Back to rooms button -->
           <div class="absolute top-5 sm:top-20 z-20">
@@ -331,28 +331,48 @@
     </section>
 
     <!-- Similar Rooms -->
-    <section v-if="similarRooms.length" class="py-12 sm:py-16 lg:py-24 bg-white">
+    <section v-if="similarRooms.length" class="py-12 sm:py-16 lg:py-24 bg-white overflow-hidden">
       <div class="container mx-auto px-4 sm:px-6">
         <div class="text-center mb-10 sm:mb-12">
           <p class="section-subtitle">{{ t.hebergements }}</p>
           <h2 class="section-title">{{ t.autreschambresetsuites }}</h2>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          <NuxtLink v-for="sr in similarRooms" :key="sr.id"
-              :to="localePath(`/rooms/${sr.id}`)"
-              class="group">
-            <div class="relative aspect-[3/4] overflow-hidden mb-4">
-              <img :src="sr.image" :alt="sr.name"
-                   class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-              <!-- <div v-if="sr.category" class="absolute top-4 left-4">
-                <span class="text-xs uppercase tracking-[0.15em] font-semibold text-white bg-black/40 px-3 py-1">{{ sr.category }}</span>
-              </div> -->
+
+        <div class="relative">
+          <!-- Slider Container -->
+          <div class="overflow-hidden cursor-grab active:cursor-grabbing select-none"
+               @mousedown="dragStartSimilar" @mousemove="dragMoveSimilar" @mouseup="dragEndSimilar" @mouseleave="dragEndSimilar"
+               @touchstart.passive="dragStartSimilar" @touchmove.passive="dragMoveSimilar" @touchend="dragEndSimilar">
+            <div class="flex transition-transform duration-500 ease-out"
+                 :class="isDraggingSimilar ? 'transition-none' : ''"
+                 :style="{ transform: `translateX(calc(-${similarCurrentIndex * (100 / similarVisibleCount)}% + ${dragOffsetSimilar}px))` }">
+              <div v-for="sr in similarRooms" :key="sr.id"
+                   class="flex-shrink-0 px-3 sm:px-4"
+                   :style="{ width: `${100 / similarVisibleCount}%` }">
+                <NuxtLink :to="localePath(`/rooms/${sr.id}`)" class="group block">
+                  <div class="relative aspect-[3/4] overflow-hidden mb-4">
+                    <img :src="sr.image" :alt="sr.name"
+                         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  </div>
+                  <div class="w-8 h-px bg-gray-800 mb-3"></div>
+                  <h3 class="text-lg sm:text-xl font-serif mb-1 group-hover:text-amber-700 transition-colors line-clamp-1">{{ sr.name }}</h3>
+                  <p class="text-gray-400 text-sm mb-2">{{ sr.size }}m² · {{ sr.guests }} {{ t.personnes }}</p>
+                </NuxtLink>
+              </div>
             </div>
-            <div class="w-8 h-px bg-gray-800 mb-3"></div>
-            <h3 class="text-lg sm:text-xl font-serif mb-1 group-hover:text-amber-700 transition-colors">{{ sr.name }}</h3>
-            <p class="text-gray-400 text-sm mb-2">{{ sr.size }}m² · {{ sr.guests }} {{ t.personnes }}</p>
-            <!-- <span class="text-lg font-serif text-amber-700">{{ sr.price }}€ <span class="text-xs text-gray-400 font-sans">/ {{ t.nuit }}</span></span> -->
-          </NuxtLink>
+          </div>
+
+          <!-- Navigation Arrows -->
+          <template v-if="similarRooms.length > similarVisibleCount">
+            <button @click="prevSimilar" :disabled="similarCurrentIndex === 0"
+                    class="absolute left-0 sm:-left-6 top-1/2 -translate-y-1/2 w-10 h-10 bg-white shadow-xl flex items-center justify-center text-gray-800 hover:bg-amber-700 hover:text-white transition-all disabled:opacity-0 z-10 border border-gray-100">
+              <Icon name="mdi:chevron-left" class="text-2xl" />
+            </button>
+            <button @click="nextSimilar" :disabled="similarCurrentIndex >= maxSimilarIndex"
+                    class="absolute right-0 sm:-right-6 top-1/2 -translate-y-1/2 w-10 h-10 bg-white shadow-xl flex items-center justify-center text-gray-800 hover:bg-amber-700 hover:text-white transition-all disabled:opacity-0 z-10 border border-gray-100">
+              <Icon name="mdi:chevron-right" class="text-2xl" />
+            </button>
+          </template>
         </div>
       </div>
     </section>
@@ -397,6 +417,42 @@ const currentImageIndex = ref(0)
 const lightboxOpen = ref(false)
 const lightboxIndex = ref(0)
 const bookingForm = ref({ checkIn: '', checkOut: '', guests: '2' })
+
+// Similar rooms carousel logic
+const similarCurrentIndex = ref(0)
+const similarVisibleCount = ref(3)
+const isDraggingSimilar = ref(false)
+const dragStartXSimilar = ref(0)
+const dragOffsetSimilar = ref(0)
+const DRAG_THRESHOLD = 50
+
+const maxSimilarIndex = computed(() => Math.max(0, similarRooms.value.length - similarVisibleCount.value))
+const prevSimilar = () => { if (similarCurrentIndex.value > 0) similarCurrentIndex.value-- }
+const nextSimilar = () => { if (similarCurrentIndex.value < maxSimilarIndex.value) similarCurrentIndex.value++ }
+
+const updateVisibleCount = () => {
+  const w = window.innerWidth
+  if (w < 640) similarVisibleCount.value = 1
+  else if (w < 1024) similarVisibleCount.value = 2
+  else similarVisibleCount.value = 3
+}
+
+const dragStartSimilar = (e) => {
+  isDraggingSimilar.value = true
+  dragStartXSimilar.value = (e.touches?.[0] || e).clientX
+  dragOffsetSimilar.value = 0
+}
+const dragMoveSimilar = (e) => {
+  if (!isDraggingSimilar.value) return
+  dragOffsetSimilar.value = (e.touches?.[0] || e).clientX - dragStartXSimilar.value
+}
+const dragEndSimilar = () => {
+  if (!isDraggingSimilar.value) return
+  isDraggingSimilar.value = false
+  if (dragOffsetSimilar.value < -DRAG_THRESHOLD) nextSimilar()
+  else if (dragOffsetSimilar.value > DRAG_THRESHOLD) prevSimilar()
+  dragOffsetSimilar.value = 0
+}
 
 const etablissement = computed(() => hotelData.value?.etablissment || hotelData.value?.etablissement || {})
 const hotelCheckIn = computed(() => etablissement.value?.pCheckIn || '15:00')
@@ -697,8 +753,11 @@ onMounted(async () => {
   const found = allRooms.find(r => String(r.id) === String(slug))
   if (found) {
     room.value = found
-    similarRooms.value = allRooms.filter(r => r.id !== found.id && !r.isBookingBasic).slice(0, 3)
+    similarRooms.value = allRooms.filter(r => r.id !== found.id && !r.isBookingBasic).slice(0, 10)
   }
+
+  updateVisibleCount()
+  window.addEventListener('resize', updateVisibleCount)
 
   loading.value = false
 })
@@ -706,6 +765,7 @@ onMounted(async () => {
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKeydown)
   document.removeEventListener('mousedown', handleCalClickOutside)
+  window.removeEventListener('resize', updateVisibleCount)
   document.body.style.overflow = 'auto'
 })
 

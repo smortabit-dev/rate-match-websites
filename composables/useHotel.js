@@ -252,11 +252,11 @@ export const useHotel = () => {
             const data = await fetchHotelData()
             if (!data || !data.comments) return getFallbackComments()
             const comments = []
-            if (source === 'all' || source === 'tripadvisor') {
-                if (data.comments.TripAdvisor) comments.push(...extractCommentsFromSource(data.comments.TripAdvisor, 'TripAdvisor', lang))
-            }
             if (source === 'all' || source === 'booking') {
                 if (data.comments.booking) comments.push(...extractCommentsFromSource(data.comments.booking, 'Booking.com', lang))
+            }
+            if (source === 'all' || source === 'tripadvisor') {
+                if (data.comments.TripAdvisor) comments.push(...extractCommentsFromSource(data.comments.TripAdvisor, 'TripAdvisor', lang))
             }
             return comments.length > 0 ? comments : getFallbackComments()
         } catch (error) {

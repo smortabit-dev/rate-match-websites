@@ -58,7 +58,7 @@
                 <h3 class="text-lg sm:text-2xl font-serif mb-2">{{ room.name }}</h3>
                 <p class="text-gray-500 text-sm sm:text-md leading-relaxed mb-4 line-clamp-3 sm:line-clamp-4 flex-1" v-html="room.description"></p>
                 <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mt-auto">
-                  <NuxtLink :to="localePath(`/rooms/${room.id}`)" class="inline-flex items-center gap-1 text-[10px] sm:text-xs uppercase tracking-[0.15em] font-semibold text-gray-800 hover:text-amber-700 transition-colors">
+                  <NuxtLink :to="localePath(`/rooms/${room.id}`)" class="px-4 sm:px-5 py-2 border border-amber-700 text-[10px] sm:text-xs uppercase tracking-[0.15em] font-semibold text-amber-700 hover:bg-amber-700 hover:text-white transition-all">
                     {{ t.voirlesdetails }}
                     <Icon name="mdi:arrow-right" class="text-sm" />
                   </NuxtLink>

@@ -63,9 +63,7 @@
               <!-- Quote mark -->
               <div class="text-amber-700 text-4xl font-serif leading-none mb-2 relative z-10">"</div>
               <!-- Quote text (max 4 lines) -->
-              <p class="text-sm sm:text-base leading-relaxed text-gray-700 font-serif italic mb-4 line-clamp-4 flex-1 relative z-10">
-                {{ item.text }}
-              </p>
+              <p class="text-sm sm:text-base leading-relaxed text-gray-700 font-serif italic mb-4 line-clamp-4 flex-1 relative z-10" v-html="item.text"></p>
               <!-- See more -->
               <button @click="openSlidePanel(idx)"
                       class="inline-flex items-center gap-1 text-xs uppercase tracking-[0.15em] font-semibold text-amber-700 hover:text-amber-800 transition-colors mb-6 self-start relative z-10">
@@ -116,8 +114,8 @@
             <div class="w-12 h-px bg-amber-700 mb-6"></div>
             <!-- Author -->
             <h4 class="text-gray-900 font-semibold text-sm uppercase tracking-wider">{{ panelComment.name }}</h4>
-            <p class="text-gray-500 text-xs mt-1 mb-2">{{ panelComment.location }}</p>
-            <p v-if="panelComment.date" class="text-gray-400 text-xs">{{ panelComment.date }}</p>
+            <p v-if="panelComment.location" class="text-gray-500 text-xs mt-1 mb-2">{{ panelComment.location }}</p>
+            <p v-if="panelComment.date" class="text-gray-400 text-xs">{{ formatDate(panelComment.date) }}</p>
             <p v-if="panelComment.source" class="text-xs text-amber-700 uppercase tracking-wider mt-4">{{ panelComment.source }}</p>
           </div>
         </div>
@@ -180,10 +178,24 @@ const closeSlidePanel = () => {
   document.body.style.overflow = 'auto'
 }
 
+const formatDate = (dateStr) => {
+  if (!dateStr) return ''
+  try {
+    const date = new Date(dateStr)
+    return new Intl.DateTimeFormat(locale.value === 'ar' ? 'fr-FR' : (locale.value || 'fr-FR'), {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric'
+    }).format(date)
+  } catch (e) {
+    return dateStr
+  }
+}
+
 const filters = computed(() => [
   { label: t.value.all, value: 'all' },
-  { label: 'TripAdvisor', value: 'tripadvisor' },
   { label: 'Booking', value: 'booking' },
+  { label: 'TripAdvisor', value: 'tripadvisor' },
 ])
 
 const { locale } = useLocale()
@@ -207,7 +219,7 @@ onMounted(async () => {
   _fetchComments = fetchComments
   const { loadCatalogue, transStatic } = useTranslations()
   const [comments, catalogue, gallery] = await Promise.all([
-    fetchComments('all', locale.value),
+    fetchComments('booking', locale.value),
     loadCatalogue(locale.value),
     fetchGallery(),
   ])

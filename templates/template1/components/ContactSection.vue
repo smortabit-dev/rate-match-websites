@@ -4,8 +4,8 @@
 
       <!-- Section header -->
       <div class="mb-10 sm:mb-16">
-        <p class="section-subtitle">{{ t.noussommesavotreecoute }}</p>
-        <h2 class="section-title">{{ t.notreemplacement }}</h2>
+        <p class="section-subtitle">{{ t.contacteznous }}</p>
+        <h2 class="section-title">{{ t.noussommesavotreecoute }}</h2>
       </div>
 
       <!-- Two-col: form (left) | map (right) -->
@@ -100,11 +100,16 @@
         </div>
 
         <!-- ── Map ── -->
-        <div class="sticky top-8 h-[380px] sm:h-[460px] lg:h-[560px]">
-          <div v-if="loadingMap" class="w-full h-full flex items-center justify-center bg-gray-50">
-            <div class="inline-block animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-amber-700"></div>
+        <div class="sticky top-8">
+          <div class="mb-8">
+            <h2 class="section-title">{{ t.notreemplacement }}</h2>
           </div>
-          <div ref="mapContainer" class="w-full h-full"></div>
+          <div class="h-[380px] sm:h-[460px] lg:h-[500px]">
+            <div v-if="loadingMap" class="w-full h-full flex items-center justify-center bg-gray-50">
+              <div class="inline-block animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-amber-700"></div>
+            </div>
+            <div ref="mapContainer" class="w-full h-full"></div>
+          </div>
         </div>
 
       </div>
@@ -205,7 +210,7 @@ const submitForm = async () => {
 
 // ── Translations ──────────────────────────────────────────────────────────────
 const STATIC_KEYS = [
-  'notreemplacement', 'noussommesavotreecoute',
+  'notreemplacement', 'noussommesavotreecoute', 'contacteznous',
   'name', 'email', 'tel', 'sujet', 'message', 'recopiezlecontenudecetteimage',
   'jailuetjacceptelesconditionsdereservation', 'legalconditions', 'send', 'sending',
   'requirederror', 'emailinvalid', 'telinvalid', 'legalerror',

@@ -14,7 +14,7 @@
         <!-- Right: category filter tabs + arrows -->
         <div class="flex items-center gap-4 mt-6 md:mt-0" v-if="categories.length">
           <!-- Sliding window of category buttons -->
-          <div class="flex gap-2">
+          <div class="flex gap-2 flex-wrap">
             <button v-for="(cat, idx) in visibleCategories" :key="idx"
                     @click="setCategory(filterOffset + idx)"
                     class="px-4 py-1.5 text-xs uppercase tracking-[0.15em] font-semibold transition-all duration-300 border"
